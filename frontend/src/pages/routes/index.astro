@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRoutes } from '../../lib/strapi';
+
+// Try to fetch routes from Strapi, fall back to mock data
+let routes = await getRoutes();
+
+if (routes.length === 0) {
+  routes = [
+    {
+      id: 1, documentId: '1',
+      title: 'Mae Hong Son Loop', slug: 'mae-hong-son-loop',
+      description: '', excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery. Winding roads, hill tribe villages, and breathtaking viewpoints.',
+      distance_km: 600, estimated_hours: 16, difficulty: 'intermediate', road_type: 'paved',
+      region: 'north', best_months: 'Nov - Feb',
+    },
+    {
+      id: 2, documentId: '2',
+      title: 'Doi Inthanon Summit', slug: 'doi-inthanon-summit',
+      description: '', excerpt: 'Ride to the rooftop of Thailand. The highest peak at 2,565m offers cool temperatures, cascading waterfalls, and royal pagodas in the clouds.',
+      distance_km: 120, estimated_hours: 4, difficulty: 'beginner', road_type: 'paved',
+      region: 'north', best_months: 'Nov - Mar',
+    },
+    {
+      id: 3, documentId: '3',
+      title: 'Pai Canyon Run', slug: 'pai-canyon-run',
+      description: '', excerpt: 'Navigate 762 curves from Chiang Mai to the laidback town of Pai. A challenging ride rewarded with hot springs, waterfalls, and stunning sunsets.',
+      distance_km: 150, estimated_hours: 5, difficulty: 'advanced', road_type: 'mixed',
+      region: 'north', best_months: 'Nov - Feb',
+    },
+    {
+      id: 4, documentId: '4',
+      title: 'Samoeng Loop', slug: 'samoeng-loop',
+      description: '', excerpt: 'A perfect half-day loop from Chiang Mai through rural countryside, villages, and gentle mountain roads. Great for beginners.',
+      distance_km: 100, estimated_hours: 3, difficulty: 'beginner', road_type: 'paved',
+      region: 'north', best_months: 'Oct - Mar',
+    },
+    {
+      id: 5, documentId: '5',
+      title: 'Golden Triangle Border Run', slug: 'golden-triangle-border-run',
+      description: '', excerpt: 'Ride along the Mekong River to where Thailand, Laos, and Myanmar meet. A historic and scenic journey through Chiang Rai province.',
+      distance_km: 280, estimated_hours: 8, difficulty: 'intermediate', road_type: 'paved',
+      region: 'north', best_months: 'Nov - Feb',
+    },
+    {
+      id: 6, documentId: '6',
+      title: 'Khao Sok Jungle Ride', slug: 'khao-sok-jungle-ride',
+      description: '', excerpt: 'Cut through the dense rainforests of Southern Thailand to reach Khao Sok National Park. Limestone cliffs, hidden lakes, and wild monkeys.',
+      distance_km: 180, estimated_hours: 5, difficulty: 'intermediate', road_type: 'mixed',
+      region: 'south', best_months: 'Dec - Apr',
+    },
+  ] as any;
+}
+---
+
+<BaseLayout title="Routes" description="Browse all motorcycle routes across Thailand. Filter by region, difficulty, and distance.">
+  <div class="page-header">
+    <div class="container">
+      <span class="section__label">Explore</span>
+      <h1 class="page-header__title">All Routes</h1>
+      <p class="page-header__description">
+        Discover curated motorcycle routes across every region of Thailand.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <!-- Filter Bar -->
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn filter-btn--active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="north">North</button>
+        <button class="filter-btn" data-filter="northeast">Northeast</button>
+        <button class="filter-btn" data-filter="central">Central</button>
+        <button class="filter-btn" data-filter="south">South</button>
+        <span style="width: 1px; background: var(--color-border); margin: 0 var(--space-2);"></span>
+        <button class="filter-btn" data-filter="beginner">Beginner</button>
+        <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+        <button class="filter-btn" data-filter="advanced">Advanced</button>
+      </div>
+
+      <!-- Route Grid -->
+      <div class="routes-grid" id="routes-grid">
+        {routes.map((route) => (
+          <a href={`/routes/${route.slug}`} class="route-card" id={`route-${route.slug}`} data-region={route.region} data-difficulty={route.difficulty}>
+            <div class="route-card__image">
+              <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: var(--text-3xl);">
+                🏔️
+              </div>
+              <span class={`route-card__difficulty route-card__difficulty--${route.difficulty}`}>
+                {route.difficulty}
+              </span>
+            </div>
+            <div class="route-card__body">
+              <span class="route-card__region">{route.region} Thailand</span>
+              <h3 class="route-card__title">{route.title}</h3>
+              <p class="route-card__excerpt">{route.excerpt}</p>
+              <div class="route-card__stats">
+                <div class="route-card__stat">
+                  <strong>{route.distance_km} km</strong>
+                </div>
+                <div class="route-card__stat">
+                  <strong>{route.estimated_hours}h</strong> ride
+                </div>
+                <div class="route-card__stat">
+                  <strong>{route.road_type}</strong>
+                </div>
+                <div class="route-card__stat">
+                  <strong>{route.best_months}</strong>
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Client-side filtering
+  const filterBar = document.getElementById('filter-bar');
+  const routeCards = document.querySelectorAll('.route-card') as NodeListOf<HTMLElement>;
+
+  filterBar?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.classList.contains('filter-btn')) return;
+
+    const filter = target.dataset.filter;
+
+    // Toggle active state
+    filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-btn--active'));
+    target.classList.add('filter-btn--active');
+
+    // Filter cards
+    routeCards.forEach(card => {
+      if (filter === 'all') {
+        card.style.display = '';
+        return;
+      }
+      const region = card.dataset.region;
+      const difficulty = card.dataset.difficulty;
+      const matches = region === filter || difficulty === filter;
+      card.style.display = matches ? '' : 'none';
+    });
+  });
+</script>

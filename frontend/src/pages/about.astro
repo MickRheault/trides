@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" description="About Trides — a motorcycle route repository for riders exploring Thailand.">
+  <div class="page-header">
+    <div class="container">
+      <span class="section__label">About</span>
+      <h1 class="page-header__title">About Trides</h1>
+      <p class="page-header__description">
+        A passion project by riders, for riders. Built to help you discover Thailand's best roads.
+      </p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container container--narrow">
+      <div style="font-size: var(--text-lg); color: var(--color-text-secondary); line-height: 1.8;">
+        <p style="margin-bottom: var(--space-6);">
+          <strong style="color: var(--color-text);">Trides</strong> (Thai + Rides) is a curated repository of motorcycle routes across Thailand. Whether you're a seasoned touring rider or a first-timer on a rented Honda Wave, we want to help you find the perfect road.
+        </p>
+        <p style="margin-bottom: var(--space-6);">
+          Every route is documented with GPS tracks you can download, road condition details, best-season timing, and honest difficulty ratings. No clickbait, no sponsored content — just real routes we've ridden and loved.
+        </p>
+        <p style="margin-bottom: var(--space-6);">
+          Thailand offers some of the best motorcycle riding in the world. From the winding mountain passes of the north to the coastal roads of the south, there's a route for every skill level and every type of bike.
+        </p>
+      </div>
+
+      <div class="about__grid" style="margin-top: var(--space-12);">
+        <div class="about__card">
+          <div class="about__icon">🇹🇭</div>
+          <h3>Made in Thailand</h3>
+          <p>Built by riders based in Thailand who ride these routes regularly and keep the information up to date.</p>
+        </div>
+        <div class="about__card">
+          <div class="about__icon">🆓</div>
+          <h3>Free & Open</h3>
+          <p>All route information and GPX tracks are completely free to download and use. No accounts required.</p>
+        </div>
+        <div class="about__card">
+          <div class="about__icon">🔄</div>
+          <h3>Always Updated</h3>
+          <p>Road conditions change. We regularly update routes to reflect new constructions, closures, and seasonal changes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

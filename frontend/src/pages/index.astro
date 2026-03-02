@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getRoutes } from '../lib/strapi';
+
+// Try to fetch routes from Strapi, fall back to mock data
+let routes = await getRoutes();
+
+// Mock data for development when Strapi isn't running
+if (routes.length === 0) {
+  routes = [
+    {
+      id: 1,
+      documentId: '1',
+      title: 'Mae Hong Son Loop',
+      slug: 'mae-hong-son-loop',
+      description: '',
+      excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery. Winding roads, hill tribe villages, and breathtaking viewpoints.',
+      distance_km: 600,
+      estimated_hours: 16,
+      difficulty: 'intermediate',
+      road_type: 'paved',
+      region: 'north',
+      best_months: 'Nov - Feb',
+    },
+    {
+      id: 2,
+      documentId: '2',
+      title: 'Doi Inthanon Summit',
+      slug: 'doi-inthanon-summit',
+      description: '',
+      excerpt: 'Ride to the rooftop of Thailand. The highest peak at 2,565m offers cool temperatures, cascading waterfalls, and royal pagodas in the clouds.',
+      distance_km: 120,
+      estimated_hours: 4,
+      difficulty: 'beginner',
+      road_type: 'paved',
+      region: 'north',
+      best_months: 'Nov - Mar',
+    },
+    {
+      id: 3,
+      documentId: '3',
+      title: 'Pai Canyon Run',
+      slug: 'pai-canyon-run',
+      description: '',
+      excerpt: 'Navigate 762 curves from Chiang Mai to the laidback town of Pai. A challenging ride rewarded with hot springs, waterfalls, and stunning sunsets.',
+      distance_km: 150,
+      estimated_hours: 5,
+      difficulty: 'advanced',
+      road_type: 'mixed',
+      region: 'north',
+      best_months: 'Nov - Feb',
+    },
+  ] as any;
+}
+
+const featuredRoutes = routes.slice(0, 3);
+---
+
+<BaseLayout title="Home">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <div class="hero__badge">
+        🏍️ Motorcycle Routes in Thailand
+      </div>
+      <h1 class="hero__title">
+        Explore Thailand on<br />
+        <span class="highlight">Two Wheels</span>
+      </h1>
+      <p class="hero__subtitle">
+        Curated motorcycle routes through Thailand's mountains, coastlines, and hidden gems. 
+        GPS tracks, road conditions, and everything you need for your next ride.
+      </p>
+      <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+        <a href="/routes" class="btn btn--primary btn--lg">
+          Browse Routes →
+        </a>
+        <a href="/about" class="btn btn--secondary btn--lg">
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Routes -->
+  <section class="section">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__label">Featured Rides</span>
+        <h2 class="section__title">Popular Routes</h2>
+        <p class="section__description">
+          Hand-picked routes that showcase the best of Thailand's diverse riding terrain.
+        </p>
+      </div>
+
+      <div class="routes-grid">
+        {featuredRoutes.map((route) => (
+          <a href={`/routes/${route.slug}`} class="route-card" id={`route-${route.slug}`}>
+            <div class="route-card__image">
+              <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: var(--text-3xl);">
+                🏔️
+              </div>
+              <span class={`route-card__difficulty route-card__difficulty--${route.difficulty}`}>
+                {route.difficulty}
+              </span>
+            </div>
+            <div class="route-card__body">
+              <span class="route-card__region">{route.region} Thailand</span>
+              <h3 class="route-card__title">{route.title}</h3>
+              <p class="route-card__excerpt">{route.excerpt}</p>
+              <div class="route-card__stats">
+                <div class="route-card__stat">
+                  <strong>{route.distance_km} km</strong>
+                </div>
+                <div class="route-card__stat">
+                  <strong>{route.estimated_hours}h</strong> ride
+                </div>
+                <div class="route-card__stat">
+                  <strong>{route.best_months}</strong>
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-12);">
+        <a href="/routes" class="btn btn--secondary btn--lg">View All Routes →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section about">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__label">Why Trides</span>
+        <h2 class="section__title">Your Riding Companion</h2>
+        <p class="section__description">
+          Everything you need to plan your next motorcycle adventure in the Land of Smiles.
+        </p>
+      </div>
+
+      <div class="about__grid">
+        <div class="about__card">
+          <div class="about__icon">📍</div>
+          <h3>GPS Tracks</h3>
+          <p>Download GPX files for every route. Load them on your phone or GPS device and ride with confidence, even without cell service.</p>
+        </div>
+        <div class="about__card">
+          <div class="about__icon">🛣️</div>
+          <h3>Road Conditions</h3>
+          <p>Know exactly what to expect — road surface type, elevation changes, fuel stop distances, and seasonal conditions for every route.</p>
+        </div>
+        <div class="about__card">
+          <div class="about__icon">🌡️</div>
+          <h3>Best Timing</h3>
+          <p>Ride in the right season. We tell you the best months for each route, considering weather, road conditions, and tourist crowds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

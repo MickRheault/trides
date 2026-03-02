@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRoutes, getRouteBySlug } from '../../lib/strapi';
+
+export async function getStaticPaths() {
+  // Try to get routes from Strapi
+  let routes = await getRoutes();
+
+  // Fall back to mock slugs if Strapi isn't running
+  if (routes.length === 0) {
+    return [
+      { params: { slug: 'mae-hong-son-loop' } },
+      { params: { slug: 'doi-inthanon-summit' } },
+      { params: { slug: 'pai-canyon-run' } },
+    ];
+  }
+
+  return routes.map((route) => ({
+    params: { slug: route.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+// Try fetching from Strapi
+let route = slug ? await getRouteBySlug(slug) : null;
+
+// Mock data for development
+if (!route) {
+  const mockRoutes: Record<string, any> = {
+    'mae-hong-son-loop': {
+      id: 1, documentId: '1',
+      title: 'Mae Hong Son Loop', slug: 'mae-hong-son-loop',
+      description: `<p>The Mae Hong Son Loop is arguably the most famous motorcycle route in all of Thailand. This 600km circuit starts and ends in Chiang Mai, taking riders through some of the most dramatic mountain scenery in Southeast Asia.</p>
+      <p>The loop passes through the towns of Pai, Mae Hong Son, and Mae Sariang, offering a perfect mix of twisting mountain roads, hill tribe villages, hot springs, waterfalls, and breathtaking viewpoints that drop into deep valleys below.</p>
+      <p>The roads are well-paved throughout with plenty of fuel stops along the way. Most riders complete the loop in 3-5 days, though you could easily spend a week exploring all the side roads and hidden spots.</p>`,
+      excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery.',
+      distance_km: 600, estimated_hours: 16, difficulty: 'intermediate', road_type: 'paved',
+      region: 'north', best_months: 'November - February',
+      gpx_files: [
+        { url: '#', name: 'Full Loop (Clockwise)' },
+        { url: '#', name: 'Full Loop (Counter-clockwise)' },
+        { url: '#', name: 'Pai to Mae Hong Son segment' },
+      ],
+    },
+    'doi-inthanon-summit': {
+      id: 2, documentId: '2',
+      title: 'Doi Inthanon Summit', slug: 'doi-inthanon-summit',
+      description: `<p>Doi Inthanon is the highest mountain in Thailand, standing at 2,565 meters above sea level. The ride from Chiang Mai to the summit is a beautiful half-day trip through national park land.</p>
+      <p>The route features well-maintained tarmac roads with sweeping curves through lush forest. Along the way, you'll pass stunning waterfalls (Wachirathan and Siriphum), the twin royal pagodas, and the Ang Ka Nature Trail at the summit.</p>`,
+      excerpt: 'Ride to the rooftop of Thailand with cool temperatures and royal pagodas in the clouds.',
+      distance_km: 120, estimated_hours: 4, difficulty: 'beginner', road_type: 'paved',
+      region: 'north', best_months: 'November - March',
+      gpx_files: [
+        { url: '#', name: 'Summit Route' },
+      ],
+    },
+    'pai-canyon-run': {
+      id: 3, documentId: '3',
+      title: 'Pai Canyon Run', slug: 'pai-canyon-run',
+      description: `<p>Route 1095 from Chiang Mai to Pai is legendary for its 762 curves. This challenging ride is a rite of passage for motorcycle riders visiting Northern Thailand.</p>
+      <p>The road climbs steeply from the Chiang Mai valley into the mountains, with tight switchbacks, blind corners, and steep gradients. It's not for the faint of heart, but the rewards — hot springs, jungle waterfalls, and the laidback hippie town of Pai — make every curve worthwhile.</p>`,
+      excerpt: 'Navigate 762 curves from Chiang Mai to Pai. A challenging and rewarding ride.',
+      distance_km: 150, estimated_hours: 5, difficulty: 'advanced', road_type: 'mixed',
+      region: 'north', best_months: 'November - February',
+      gpx_files: [
+        { url: '#', name: 'Chiang Mai to Pai' },
+        { url: '#', name: 'Pai to Chiang Mai (reverse)' },
+      ],
+    },
+  };
+
+  route = mockRoutes[slug ?? ''] ?? null;
+}
+
+if (!route) {
+  return Astro.redirect('/routes');
+}
+
+const difficultyColors: Record<string, string> = {
+  beginner: 'var(--color-beginner)',
+  intermediate: 'var(--color-intermediate)',
+  advanced: 'var(--color-advanced)',
+};
+---
+
+<BaseLayout title={route.title} description={route.excerpt}>
+  <div class="route-detail">
+    <div class="container">
+      <!-- Hero Image -->
+      <div class="route-detail__hero">
+        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated), var(--color-surface)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 4rem;">
+          🏔️
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="route-detail__content">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);">
+          <span class="section__label" style="margin: 0;">{route.region} Thailand</span>
+          <span class={`route-card__difficulty route-card__difficulty--${route.difficulty}`}>
+            {route.difficulty}
+          </span>
+        </div>
+        <h1 style="font-family: var(--font-display); font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl)); font-weight: 900; letter-spacing: -0.03em; margin-bottom: var(--space-6);">
+          {route.title}
+        </h1>
+        <p style="font-size: var(--text-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
+          {route.excerpt}
+        </p>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="route-detail__content">
+        <div class="stats-bar">
+          <div class="stats-bar__item">
+            <div class="stats-bar__value">{route.distance_km}</div>
+            <div class="stats-bar__label">Kilometers</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__value">{route.estimated_hours}h</div>
+            <div class="stats-bar__label">Riding Time</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__value" style={`color: ${difficultyColors[route.difficulty]}`}>{route.difficulty}</div>
+            <div class="stats-bar__label">Difficulty</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__value">{route.road_type}</div>
+            <div class="stats-bar__label">Road Type</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Placeholder -->
+      <div class="route-detail__content">
+        <div class="map-placeholder">
+          🗺️ Interactive map will be integrated here (Mapbox / Leaflet)
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="route-detail__content">
+        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
+          About This Route
+        </h2>
+        <div set:html={route.description} />
+      </div>
+
+      <!-- Best Months -->
+      <div class="route-detail__content">
+        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
+          Best Time to Ride
+        </h2>
+        <p style="font-size: var(--text-lg); color: var(--color-text-secondary); line-height: 1.8;">
+          The recommended months for this route are <strong style="color: var(--color-accent);">{route.best_months}</strong>.
+        </p>
+      </div>
+
+      <!-- GPX Downloads -->
+      {route.gpx_files && route.gpx_files.length > 0 && (
+        <div class="route-detail__content">
+          <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
+            Download GPX Tracks
+          </h2>
+          <div class="gpx-downloads">
+            {route.gpx_files.map((file: any) => (
+              <a href={file.url} class="gpx-btn" download>
+                📥 {file.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Back link -->
+      <div class="route-detail__content" style="padding: var(--space-16) 0;">
+        <a href="/routes" class="btn btn--secondary">← Back to All Routes</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
