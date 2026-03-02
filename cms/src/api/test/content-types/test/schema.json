@@ -13,6 +13,9 @@
   "attributes": {
     "oui": {
       "type": "string"
+    },
+    "toe": {
+      "type": "boolean"
     }
   }
 }

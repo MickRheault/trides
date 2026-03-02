@@ -449,6 +449,7 @@ export interface ApiTestTest extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     oui: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    toe: Schema.Attribute.Boolean;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
