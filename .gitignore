@@ -22,8 +22,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Strapi uploads (local dev)
-cms/public/uploads/
+# Strapi uploads (ignore files, keep directory)
+cms/public/uploads/*
+!cms/public/uploads/.gitkeep
 
 # Logs
 *.log
