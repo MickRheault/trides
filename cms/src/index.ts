@@ -1,29 +1,31 @@
-import type { Core } from '@strapi/strapi';
-import mime from 'mime-types';
+// Register custom MIME types for geo files
+const customMimeTypes: Record<string, string> = {
+  gpx: 'application/gpx+xml',
+  kml: 'application/vnd.google-earth.kml+xml',
+  kmz: 'application/vnd.google-earth.kmz',
+};
 
 export default {
   /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
    * Register custom MIME types so Strapi's upload plugin
    * accepts GPX, KML, and KMZ files.
    */
-  register({ strapi }: { strapi: Core.Strapi }) {
-    // Register GPX and other geo file MIME types
-    mime.types['gpx'] = 'application/gpx+xml';
-    mime.extensions['application/gpx+xml'] = 'gpx';
-
-    mime.types['kml'] = 'application/vnd.google-earth.kml+xml';
-    mime.extensions['application/vnd.google-earth.kml+xml'] = 'kml';
-
-    mime.types['kmz'] = 'application/vnd.google-earth.kmz';
-    mime.extensions['application/vnd.google-earth.kmz'] = 'kmz';
+  register() {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const mime = require('mime-types');
+      for (const [ext, type] of Object.entries(customMimeTypes)) {
+        mime.types[ext] = type;
+        mime.extensions[type] = [ext];
+      }
+    } catch {
+      // mime-types not available, skip custom MIME registration
+    }
   },
 
   /**
    * An asynchronous bootstrap function that runs before
    * your application gets started.
    */
-  bootstrap(/* { strapi }: { strapi: Core.Strapi } */) { },
+  bootstrap() { },
 };
