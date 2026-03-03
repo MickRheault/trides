@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.astro
+.strapi
+.tmp
+.cache
+public/uploads
+package-lock.json
