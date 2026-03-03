@@ -1,0 +1,103 @@
+{
+    "kind": "collectionType",
+    "collectionName": "routes",
+    "info": {
+        "singularName": "route",
+        "pluralName": "routes",
+        "displayName": "Route",
+        "description": "Motorcycle routes in Thailand"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "title",
+            "required": true
+        },
+        "description": {
+            "type": "richtext"
+        },
+        "excerpt": {
+            "type": "text"
+        },
+        "distance_km": {
+            "type": "decimal"
+        },
+        "estimated_hours": {
+            "type": "decimal"
+        },
+        "difficulty": {
+            "type": "enumeration",
+            "enum": [
+                "beginner",
+                "intermediate",
+                "advanced"
+            ],
+            "required": true
+        },
+        "road_type": {
+            "type": "enumeration",
+            "enum": [
+                "paved",
+                "mixed",
+                "off-road"
+            ],
+            "required": true
+        },
+        "region": {
+            "type": "enumeration",
+            "enum": [
+                "north",
+                "northeast",
+                "central",
+                "south"
+            ],
+            "required": true
+        },
+        "best_months": {
+            "type": "string"
+        },
+        "hero_image": {
+            "type": "media",
+            "multiple": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "gpx_files": {
+            "type": "media",
+            "multiple": true,
+            "allowedTypes": [
+                "files"
+            ]
+        },
+        "gallery": {
+            "type": "media",
+            "multiple": true,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "google_maps_url": {
+            "type": "string"
+        },
+        "pois": {
+            "type": "component",
+            "repeatable": true,
+            "component": "map.poi"
+        },
+        "provinces": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::province.province",
+            "inversedBy": "routes"
+        }
+    }
+}

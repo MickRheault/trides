@@ -1,0 +1,42 @@
+{
+    "collectionName": "components_map_pois",
+    "info": {
+        "displayName": "POI",
+        "description": "Point of Interest along a route",
+        "icon": "pinMap"
+    },
+    "options": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text"
+        },
+        "latitude": {
+            "type": "decimal",
+            "required": true
+        },
+        "longitude": {
+            "type": "decimal",
+            "required": true
+        },
+        "type": {
+            "type": "enumeration",
+            "enum": [
+                "fuel",
+                "viewpoint",
+                "food",
+                "accommodation",
+                "attraction",
+                "warning"
+            ],
+            "default": "attraction",
+            "required": true
+        },
+        "google_maps_url": {
+            "type": "string"
+        }
+    }
+}
