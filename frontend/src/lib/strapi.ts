@@ -21,6 +21,22 @@ interface StrapiResponse<T> {
   };
 }
 
+export interface POI {
+  name: string;
+  description?: string;
+  latitude: number;
+  longitude: number;
+  type: 'fuel' | 'viewpoint' | 'food' | 'accommodation' | 'attraction' | 'warning';
+  google_maps_url?: string;
+}
+
+export interface Province {
+  id: number;
+  name: string;
+  name_thai?: string;
+  region: 'north' | 'northeast' | 'central' | 'south';
+}
+
 export interface Route {
   id: number;
   documentId: string;
@@ -34,10 +50,12 @@ export interface Route {
   road_type: 'paved' | 'mixed' | 'off-road';
   region: 'north' | 'northeast' | 'central' | 'south';
   best_months: string;
+  google_maps_url?: string;
   hero_image?: {
     url: string;
     alternativeText?: string;
   };
+  gpx_file?: string;
   gpx_files?: Array<{
     url: string;
     name: string;
@@ -46,6 +64,8 @@ export interface Route {
     url: string;
     alternativeText?: string;
   }>;
+  pois?: POI[];
+  provinces?: Province[];
 }
 
 /**
