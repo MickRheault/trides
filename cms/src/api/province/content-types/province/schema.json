@@ -1,0 +1,40 @@
+{
+    "kind": "collectionType",
+    "collectionName": "provinces",
+    "info": {
+        "singularName": "province",
+        "pluralName": "provinces",
+        "displayName": "Province",
+        "description": "Thai provinces"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+        },
+        "name_thai": {
+            "type": "string"
+        },
+        "region": {
+            "type": "enumeration",
+            "enum": [
+                "north",
+                "northeast",
+                "central",
+                "south"
+            ],
+            "required": true
+        },
+        "routes": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::route.route",
+            "mappedBy": "provinces"
+        }
+    }
+}

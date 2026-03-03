@@ -430,26 +430,88 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiTestTest extends Struct.CollectionTypeSchema {
-  collectionName: 'tests';
+export interface ApiProvinceProvince extends Struct.CollectionTypeSchema {
+  collectionName: 'provinces';
   info: {
-    displayName: 'test';
-    pluralName: 'tests';
-    singularName: 'test';
+    description: 'Thai provinces';
+    displayName: 'Province';
+    pluralName: 'provinces';
+    singularName: 'province';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::test.test'> &
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::province.province'
+    > &
       Schema.Attribute.Private;
-    oui: Schema.Attribute.String;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    name_thai: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    toe: Schema.Attribute.Boolean;
+    region: Schema.Attribute.Enumeration<
+      ['north', 'northeast', 'central', 'south']
+    > &
+      Schema.Attribute.Required;
+    routes: Schema.Attribute.Relation<'manyToMany', 'api::route.route'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
+  collectionName: 'routes';
+  info: {
+    description: 'Motorcycle routes in Thailand';
+    displayName: 'Route';
+    pluralName: 'routes';
+    singularName: 'route';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    best_months: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText;
+    difficulty: Schema.Attribute.Enumeration<
+      ['beginner', 'intermediate', 'advanced']
+    > &
+      Schema.Attribute.Required;
+    distance_km: Schema.Attribute.Decimal;
+    estimated_hours: Schema.Attribute.Decimal;
+    excerpt: Schema.Attribute.Text;
+    gallery: Schema.Attribute.Media<'images', true>;
+    google_maps_url: Schema.Attribute.String;
+    gpx_files: Schema.Attribute.Media<'files', true>;
+    hero_image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::route.route'> &
+      Schema.Attribute.Private;
+    pois: Schema.Attribute.Component<'map.poi', true>;
+    provinces: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::province.province'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    region: Schema.Attribute.Enumeration<
+      ['north', 'northeast', 'central', 'south']
+    > &
+      Schema.Attribute.Required;
+    road_type: Schema.Attribute.Enumeration<['paved', 'mixed', 'off-road']> &
+      Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -967,7 +1029,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::test.test': ApiTestTest;
+      'api::province.province': ApiProvinceProvince;
+      'api::route.route': ApiRouteRoute;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

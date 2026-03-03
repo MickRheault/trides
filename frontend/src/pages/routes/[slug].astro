@@ -3,10 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoutes, getRouteBySlug } from '../../lib/strapi';
 
 export async function getStaticPaths() {
-  // Try to get routes from Strapi
   let routes = await getRoutes();
 
-  // Fall back to mock slugs if Strapi isn't running
   if (routes.length === 0) {
     return [
       { params: { slug: 'mae-hong-son-loop' } },
@@ -22,10 +20,8 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-// Try fetching from Strapi
 let route = slug ? await getRouteBySlug(slug) : null;
 
-// Mock data for development
 if (!route) {
   const mockRoutes: Record<string, any> = {
     'mae-hong-son-loop': {
@@ -37,8 +33,9 @@ if (!route) {
       excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery.',
       distance_km: 600, estimated_hours: 16, difficulty: 'intermediate', road_type: 'paved',
       region: 'north', best_months: 'November - February',
+      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
-        { url: '#', name: 'Full Loop (Clockwise)' },
+        { url: '/gpx/maehongson-gardenofrocks.gpx', name: 'Full Loop (Clockwise)' },
         { url: '#', name: 'Full Loop (Counter-clockwise)' },
         { url: '#', name: 'Pai to Mae Hong Son segment' },
       ],
@@ -51,6 +48,7 @@ if (!route) {
       excerpt: 'Ride to the rooftop of Thailand with cool temperatures and royal pagodas in the clouds.',
       distance_km: 120, estimated_hours: 4, difficulty: 'beginner', road_type: 'paved',
       region: 'north', best_months: 'November - March',
+      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
         { url: '#', name: 'Summit Route' },
       ],
@@ -63,6 +61,7 @@ if (!route) {
       excerpt: 'Navigate 762 curves from Chiang Mai to Pai. A challenging and rewarding ride.',
       distance_km: 150, estimated_hours: 5, difficulty: 'advanced', road_type: 'mixed',
       region: 'north', best_months: 'November - February',
+      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
         { url: '#', name: 'Chiang Mai to Pai' },
         { url: '#', name: 'Pai to Chiang Mai (reverse)' },
@@ -82,6 +81,8 @@ const difficultyColors: Record<string, string> = {
   intermediate: 'var(--color-intermediate)',
   advanced: 'var(--color-advanced)',
 };
+
+const gpxUrl = route.gpx_file || '/gpx/maehongson-gardenofrocks.gpx';
 ---
 
 <BaseLayout title={route.title} description={route.excerpt}>
@@ -132,11 +133,13 @@ const difficultyColors: Record<string, string> = {
         </div>
       </div>
 
-      <!-- Map Placeholder -->
+      <!-- Interactive Map with Elevation -->
       <div class="route-detail__content">
-        <div class="map-placeholder">
-          🗺️ Interactive map will be integrated here (Mapbox / Leaflet)
-        </div>
+        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4);">
+          Route Map & Elevation
+        </h2>
+        <div id="route-map" data-gpx={gpxUrl}></div>
+        <div id="elevation-chart"></div>
       </div>
 
       <!-- Description -->
@@ -180,3 +183,139 @@ const difficultyColors: Record<string, string> = {
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  #route-map {
+    width: 100%;
+    height: 500px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    position: relative;
+    z-index: 1;
+  }
+
+  #elevation-chart {
+    margin-top: var(--space-4);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  /* Leaflet dark theme overrides */
+  :global(.leaflet-container) {
+    background: var(--color-surface) !important;
+  }
+
+  :global(.leaflet-control-zoom a) {
+    background: var(--color-surface) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+  }
+
+  :global(.leaflet-control-zoom a:hover) {
+    background: var(--color-bg-elevated) !important;
+  }
+
+  /* Elevation chart dark theme overrides */
+  :global(.elevation-control) {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-lg) !important;
+    font-family: var(--font-body) !important;
+  }
+
+  :global(.elevation-control .background) {
+    fill: var(--color-surface) !important;
+  }
+
+  :global(.elevation-control .area) {
+    fill: var(--color-accent) !important;
+    fill-opacity: 0.3 !important;
+    stroke: var(--color-accent) !important;
+    stroke-width: 2 !important;
+  }
+
+  :global(.elevation-control .axis text),
+  :global(.elevation-control .legend text) {
+    fill: var(--color-text-secondary) !important;
+    font-family: var(--font-body) !important;
+    font-size: 11px !important;
+  }
+
+  :global(.elevation-control .axis line),
+  :global(.elevation-control .axis path) {
+    stroke: var(--color-border) !important;
+  }
+
+  :global(.elevation-control .grid line) {
+    stroke: var(--color-border) !important;
+    stroke-opacity: 0.3 !important;
+  }
+
+  :global(.elevation-control .mouse-focus-line) {
+    stroke: var(--color-accent) !important;
+  }
+
+  :global(.elevation-summary) {
+    font-family: var(--font-body) !important;
+    color: var(--color-text-secondary) !important;
+  }
+</style>
+
+<!-- Load Leaflet & Elevation from CDN (avoids SSR issues with Astro) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.css" />
+
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script is:inline src="https://unpkg.com/@raruto/leaflet-elevation/dist/leaflet-elevation.min.js"></script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mapContainer = document.getElementById('route-map');
+    if (!mapContainer) return;
+
+    const gpxUrl = mapContainer.dataset.gpx;
+
+    // Initialize map
+    const map = L.map('route-map', {
+      zoomControl: true,
+      scrollWheelZoom: false,
+    }).setView([19.0, 98.5], 8);
+
+    // Dark-themed map tiles (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Initialize elevation control
+    const elevation = L.control.elevation({
+      theme: 'lightblue-theme',
+      collapsed: false,
+      detached: true,
+      elevationDiv: '#elevation-chart',
+      autohide: false,
+      height: 180,
+      margins: { top: 20, right: 30, bottom: 30, left: 50 },
+      summary: 'inline',
+      slope: false,
+      speed: false,
+      acceleration: false,
+      time: false,
+      legend: true,
+      almostOver: true,
+      distanceMarkers: false,
+    }).addTo(map);
+
+    // Load GPX track
+    elevation.load(gpxUrl);
+
+    elevation.on('eledata_loaded', function(_e) {
+      const bounds = elevation.getBounds();
+      if (bounds && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30] });
+      }
+    });
+  });
+</script>
