@@ -73,10 +73,7 @@
         },
         "gpx_files": {
             "type": "media",
-            "multiple": true,
-            "allowedTypes": [
-                "files"
-            ]
+            "multiple": true
         },
         "gallery": {
             "type": "media",
