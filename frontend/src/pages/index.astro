@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getRoutes } from '../lib/strapi';
+import { getRoutes, getStrapiMediaUrl } from '../lib/strapi';
 
 // Try to fetch routes from Strapi, fall back to mock data
 let routes = await getRoutes();
@@ -98,9 +98,13 @@ const featuredRoutes = routes.slice(0, 3);
         {featuredRoutes.map((route) => (
           <a href={`/routes/${route.slug}`} class="route-card" id={`route-${route.slug}`}>
             <div class="route-card__image">
-              <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: var(--text-3xl);">
-                🏔️
-              </div>
+              {route.hero_image?.url ? (
+                <img src={getStrapiMediaUrl(route.hero_image.url)} alt={route.hero_image?.alternativeText || route.title} style="width: 100%; height: 100%; object-fit: cover;" />
+              ) : (
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: var(--text-3xl);">
+                  🏔️
+                </div>
+              )}
               <span class={`route-card__difficulty route-card__difficulty--${route.difficulty}`}>
                 {route.difficulty}
               </span>
