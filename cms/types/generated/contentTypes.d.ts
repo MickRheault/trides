@@ -438,7 +438,7 @@ export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
     excerpt: Schema.Attribute.Text;
     gallery: Schema.Attribute.Media<'images', true>;
     google_maps_url: Schema.Attribute.String;
-    gpx_files: Schema.Attribute.Media<'files', true>;
+    gpx_files: Schema.Attribute.Media<undefined, true>;
     hero_image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::route.route'> &

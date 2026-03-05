@@ -91,10 +91,10 @@ describe('Route content type schema', () => {
             expect(schema.attributes.hero_image.allowedTypes).toEqual(['images']);
         });
 
-        it('has gpx_files (multiple files)', () => {
+        it('has gpx_files (multiple, no type restriction)', () => {
             expect(schema.attributes.gpx_files.type).toBe('media');
             expect(schema.attributes.gpx_files.multiple).toBe(true);
-            expect(schema.attributes.gpx_files.allowedTypes).toEqual(['files']);
+            expect(schema.attributes.gpx_files.allowedTypes).toBeUndefined();
         });
 
         it('has gallery (multiple images)', () => {
