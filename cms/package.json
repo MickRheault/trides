@@ -21,6 +21,7 @@
   "dependencies": {
     "@strapi/plugin-cloud": "5.37.1",
     "@strapi/plugin-users-permissions": "5.37.1",
+    "@strapi/provider-upload-cloudinary": "^5.38.0",
     "@strapi/strapi": "5.37.1",
     "better-sqlite3": "12.4.1",
     "mime-types": "^3.0.2",
