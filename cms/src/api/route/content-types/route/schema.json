@@ -83,7 +83,7 @@
             ]
         },
         "google_maps_url": {
-            "type": "string"
+            "type": "text"
         },
         "pois": {
             "type": "component",

@@ -9,7 +9,7 @@ export interface MapPoi extends Struct.ComponentSchema {
   };
   attributes: {
     description: Schema.Attribute.Text;
-    google_maps_url: Schema.Attribute.String;
+    google_maps_url: Schema.Attribute.Text;
     latitude: Schema.Attribute.Decimal;
     longitude: Schema.Attribute.Decimal;
     name: Schema.Attribute.String & Schema.Attribute.Required;
