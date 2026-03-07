@@ -79,8 +79,8 @@ describe('Route content type schema', () => {
             expect(schema.attributes.best_months.type).toBe('string');
         });
 
-        it('has google_maps_url (string)', () => {
-            expect(schema.attributes.google_maps_url.type).toBe('string');
+        it('has google_maps_url (text)', () => {
+            expect(schema.attributes.google_maps_url.type).toBe('text');
         });
     });
 
@@ -188,8 +188,8 @@ describe('POI component schema', () => {
         expect(schema.attributes.type.required).toBe(true);
     });
 
-    it('has google_maps_url (optional string)', () => {
-        expect(schema.attributes.google_maps_url.type).toBe('string');
+    it('has google_maps_url (optional text)', () => {
+        expect(schema.attributes.google_maps_url.type).toBe('text');
     });
 
     it('has description (optional text)', () => {

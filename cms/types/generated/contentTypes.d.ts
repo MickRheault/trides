@@ -437,7 +437,7 @@ export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
     estimated_hours: Schema.Attribute.Decimal;
     excerpt: Schema.Attribute.Text;
     gallery: Schema.Attribute.Media<'images', true>;
-    google_maps_url: Schema.Attribute.String;
+    google_maps_url: Schema.Attribute.Text;
     gpx_files: Schema.Attribute.Media<undefined, true>;
     hero_image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
