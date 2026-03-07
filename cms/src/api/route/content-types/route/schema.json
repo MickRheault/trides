@@ -42,14 +42,11 @@
             ],
             "required": true
         },
-        "road_type": {
-            "type": "enumeration",
-            "enum": [
-                "paved",
-                "mixed",
-                "off-road"
-            ],
-            "required": true
+        "road_types": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::road-type.road-type",
+            "inversedBy": "routes"
         },
         "region": {
             "type": "enumeration",
@@ -60,9 +57,6 @@
                 "south"
             ],
             "required": true
-        },
-        "best_months": {
-            "type": "string"
         },
         "hero_image": {
             "type": "media",
@@ -94,6 +88,12 @@
             "type": "relation",
             "relation": "manyToMany",
             "target": "api::province.province",
+            "inversedBy": "routes"
+        },
+        "motorcycles": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::motorcycle.motorcycle",
             "inversedBy": "routes"
         }
     }

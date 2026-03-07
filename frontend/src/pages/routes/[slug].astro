@@ -59,8 +59,9 @@ if (!route) {
       <p>The loop passes through the towns of Pai, Mae Hong Son, and Mae Sariang, offering a perfect mix of twisting mountain roads, hill tribe villages, hot springs, waterfalls, and breathtaking viewpoints that drop into deep valleys below.</p>
       <p>The roads are well-paved throughout with plenty of fuel stops along the way. Most riders complete the loop in 3-5 days, though you could easily spend a week exploring all the side roads and hidden spots.</p>`,
       excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery.',
-      distance_km: 600, estimated_hours: 16, difficulty: 'intermediate', road_type: 'paved',
-      region: 'north', best_months: 'November - February',
+      distance_km: 600, estimated_hours: 16, difficulty: 'intermediate',
+      road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      region: 'north',
       gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
         { url: '/gpx/maehongson-gardenofrocks.gpx', name: 'Full Loop (Clockwise)' },
@@ -90,8 +91,9 @@ if (!route) {
       description: `<p>Doi Inthanon is the highest mountain in Thailand, standing at 2,565 meters above sea level. The ride from Chiang Mai to the summit is a beautiful half-day trip through national park land.</p>
       <p>The route features well-maintained tarmac roads with sweeping curves through lush forest. Along the way, you'll pass stunning waterfalls (Wachirathan and Siriphum), the twin royal pagodas, and the Ang Ka Nature Trail at the summit.</p>`,
       excerpt: 'Ride to the rooftop of Thailand with cool temperatures and royal pagodas in the clouds.',
-      distance_km: 120, estimated_hours: 4, difficulty: 'beginner', road_type: 'paved',
-      region: 'north', best_months: 'November - March',
+      distance_km: 120, estimated_hours: 4, difficulty: 'beginner',
+      road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      region: 'north',
       gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
         { url: '#', name: 'Summit Route' },
@@ -113,8 +115,9 @@ if (!route) {
       description: `<p>Route 1095 from Chiang Mai to Pai is legendary for its 762 curves. This challenging ride is a rite of passage for motorcycle riders visiting Northern Thailand.</p>
       <p>The road climbs steeply from the Chiang Mai valley into the mountains, with tight switchbacks, blind corners, and steep gradients. It's not for the faint of heart, but the rewards — hot springs, jungle waterfalls, and the laidback hippie town of Pai — make every curve worthwhile.</p>`,
       excerpt: 'Navigate 762 curves from Chiang Mai to Pai. A challenging and rewarding ride.',
-      distance_km: 150, estimated_hours: 5, difficulty: 'advanced', road_type: 'mixed',
-      region: 'north', best_months: 'November - February',
+      distance_km: 150, estimated_hours: 5, difficulty: 'advanced',
+      road_types: [{ id: 2, documentId: 'rt2', name: 'mixed' }],
+      region: 'north',
       gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
       gpx_files: [
         { url: '#', name: 'Chiang Mai to Pai' },
@@ -217,10 +220,6 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
             <div class="stats-bar__value" style={`color: ${difficultyColors[route.difficulty]}`}>{route.difficulty}</div>
             <div class="stats-bar__label">Difficulty</div>
           </div>
-          <div class="stats-bar__item">
-            <div class="stats-bar__value">{route.road_type}</div>
-            <div class="stats-bar__label">Road Type</div>
-          </div>
         </div>
       </div>
 
@@ -241,6 +240,29 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
           About This Route
         </h2>
         <div set:html={renderDescription(route.description)} />
+        
+        <div style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--color-border); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6);">
+          <div>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Road Types</h3>
+            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+              {route.road_types?.map((rt: any) => (
+                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--text-sm);">
+                  {rt.name}
+                </span>
+              )) || 'N/A'}
+            </div>
+          </div>
+          <div>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Bikes Used</h3>
+            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+              {route.motorcycles?.map((mc: any) => (
+                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--text-sm);">
+                  🏍️ {mc.name}
+                </span>
+              )) || 'N/A'}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Gallery -->
@@ -259,15 +281,7 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
         </div>
       )}
 
-      <!-- Best Months -->
-      <div class="route-detail__content">
-        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
-          Best Time to Ride
-        </h2>
-        <p style="font-size: var(--text-lg); color: var(--color-text-secondary); line-height: 1.8;">
-          The recommended months for this route are <strong style="color: var(--color-accent);">{route.best_months}</strong>.
-        </p>
-      </div>
+
 
       <!-- GPX Downloads -->
       {route.gpx_files && route.gpx_files.length > 0 && (

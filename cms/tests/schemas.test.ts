@@ -45,10 +45,16 @@ describe('Route content type schema', () => {
             expect(schema.attributes.difficulty.required).toBe(true);
         });
 
-        it('has road_type enum with correct values', () => {
-            expect(schema.attributes.road_type.type).toBe('enumeration');
-            expect(schema.attributes.road_type.enum).toEqual(['paved', 'mixed', 'off-road']);
-            expect(schema.attributes.road_type.required).toBe(true);
+        it('has road_types relation', () => {
+            expect(schema.attributes.road_types.type).toBe('relation');
+            expect(schema.attributes.road_types.relation).toBe('manyToMany');
+            expect(schema.attributes.road_types.target).toBe('api::road-type.road-type');
+        });
+
+        it('has motorcycles relation', () => {
+            expect(schema.attributes.motorcycles.type).toBe('relation');
+            expect(schema.attributes.motorcycles.relation).toBe('manyToMany');
+            expect(schema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
         });
 
         it('has region enum with correct values', () => {
@@ -75,9 +81,7 @@ describe('Route content type schema', () => {
             expect(schema.attributes.estimated_hours.type).toBe('decimal');
         });
 
-        it('has best_months (string)', () => {
-            expect(schema.attributes.best_months.type).toBe('string');
-        });
+
 
         it('has google_maps_url (text)', () => {
             expect(schema.attributes.google_maps_url.type).toBe('text');
@@ -197,11 +201,41 @@ describe('POI component schema', () => {
     });
 });
 
+// --- Motorcycle Schema ---
+
+describe('Motorcycle content type schema', () => {
+    const schema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
+
+    it('is a collection type', () => {
+        expect(schema.kind).toBe('collectionType');
+        expect(schema.collectionName).toBe('motorcycles');
+    });
+
+    it('has draft and publish disabled', () => {
+        expect(schema.options.draftAndPublish).toBe(false);
+    });
+
+    it('has name (required, unique)', () => {
+        expect(schema.attributes.name.type).toBe('string');
+        expect(schema.attributes.name.required).toBe(true);
+        expect(schema.attributes.name.unique).toBe(true);
+    });
+
+    it('has routes as manyToMany relation back to Route', () => {
+        expect(schema.attributes.routes.type).toBe('relation');
+        expect(schema.attributes.routes.relation).toBe('manyToMany');
+        expect(schema.attributes.routes.target).toBe('api::route.route');
+        expect(schema.attributes.routes.mappedBy).toBe('motorcycles');
+    });
+});
+
 // --- Cross-schema consistency ---
 
 describe('Schema consistency', () => {
     const routeSchema = loadSchema('src/api/route/content-types/route/schema.json');
     const provinceSchema = loadSchema('src/api/province/content-types/province/schema.json');
+    const roadTypeSchema = loadSchema('src/api/road-type/content-types/road-type/schema.json');
+    const motorcycleSchema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
 
     it('Route and Province region enums match', () => {
         expect(routeSchema.attributes.region.enum).toEqual(
@@ -216,9 +250,25 @@ describe('Schema consistency', () => {
         expect(provinceSchema.attributes.routes.mappedBy).toBe('provinces');
     });
 
+    it('Route→RoadType relation matches RoadType→Route inverse', () => {
+        expect(routeSchema.attributes.road_types.target).toBe('api::road-type.road-type');
+        expect(routeSchema.attributes.road_types.inversedBy).toBe('routes');
+        expect(roadTypeSchema.attributes.routes.target).toBe('api::route.route');
+        expect(roadTypeSchema.attributes.routes.mappedBy).toBe('road_types');
+    });
+
+    it('Route→Motorcycle relation matches Motorcycle→Route inverse', () => {
+        expect(routeSchema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
+        expect(routeSchema.attributes.motorcycles.inversedBy).toBe('routes');
+        expect(motorcycleSchema.attributes.routes.target).toBe('api::route.route');
+        expect(motorcycleSchema.attributes.routes.mappedBy).toBe('motorcycles');
+    });
+
     it('all schemas are valid JSON', () => {
         // If we got here without errors, all schemas loaded successfully
         expect(routeSchema).toBeDefined();
         expect(provinceSchema).toBeDefined();
+        expect(roadTypeSchema).toBeDefined();
+        expect(motorcycleSchema).toBeDefined();
     });
 });

@@ -1,0 +1,27 @@
+{
+    "kind": "collectionType",
+    "collectionName": "motorcycles",
+    "info": {
+        "singularName": "motorcycle",
+        "pluralName": "motorcycles",
+        "displayName": "Motorcycle",
+        "description": "Categories of motorcycles suitable for routes"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+        },
+        "routes": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::route.route",
+            "mappedBy": "motorcycles"
+        }
+    }
+}
