@@ -170,14 +170,14 @@ describe('POI component schema', () => {
         expect(schema.attributes.name.required).toBe(true);
     });
 
-    it('has latitude (required decimal)', () => {
+    it('has latitude (optional decimal)', () => {
         expect(schema.attributes.latitude.type).toBe('decimal');
-        expect(schema.attributes.latitude.required).toBe(true);
+        expect(schema.attributes.latitude.required).toBeUndefined();
     });
 
-    it('has longitude (required decimal)', () => {
+    it('has longitude (optional decimal)', () => {
         expect(schema.attributes.longitude.type).toBe('decimal');
-        expect(schema.attributes.longitude.required).toBe(true);
+        expect(schema.attributes.longitude.required).toBeUndefined();
     });
 
     it('has type enum with all POI categories', () => {

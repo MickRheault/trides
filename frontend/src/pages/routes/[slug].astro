@@ -1,18 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoutes, getRouteBySlug, getStrapiMediaUrl } from '../../lib/strapi';
+import { marked } from 'marked';
 
-/** Convert Strapi richtext (plain text with newlines) to HTML paragraphs */
-function richTextToHtml(text: string): string {
+/** Convert Strapi richtext (markdown) to HTML */
+function renderDescription(text: string): string {
   if (!text) return '';
-  // If already contains HTML tags, return as-is
+  // If already contains HTML tags, return as-is (mock data)
   if (text.includes('<p>') || text.includes('<br')) return text;
-  // Split on double newlines into paragraphs
-  return text
-    .split(/\n\s*\n/)
-    .filter((p) => p.trim())
-    .map((p) => `<p>${p.trim()}</p>`)
-    .join('\n');
+  // Parse markdown from Strapi
+  return marked.parse(text, { async: false }) as string;
 }
 
 export async function getStaticPaths() {
@@ -60,6 +57,14 @@ if (!route) {
         { name: 'Ob Luang Gorge', description: 'Narrow canyon with a suspension bridge. Good rest stop.', latitude: 18.3200, longitude: 98.4000, type: 'viewpoint' },
         { name: 'Steep Descent Warning', description: 'Very steep hairpin descents between Pai and Mae Hong Son. Use low gear.', latitude: 19.2800, longitude: 98.2600, type: 'warning' },
       ],
+      gallery: [
+        { url: 'https://picsum.photos/seed/mhs1/800/600', alternativeText: 'Mountain road with sweeping curves' },
+        { url: 'https://picsum.photos/seed/mhs2/800/600', alternativeText: 'Hill tribe village along the loop' },
+        { url: 'https://picsum.photos/seed/mhs3/800/600', alternativeText: 'Misty valley viewpoint' },
+        { url: 'https://picsum.photos/seed/mhs4/800/600', alternativeText: 'Pai town at sunset' },
+        { url: 'https://picsum.photos/seed/mhs5/800/600', alternativeText: 'Winding road through forest' },
+        { url: 'https://picsum.photos/seed/mhs6/800/600', alternativeText: 'Hot springs stop' },
+      ],
     },
     'doi-inthanon-summit': {
       id: 2, documentId: '2',
@@ -77,6 +82,11 @@ if (!route) {
         { name: 'Wachirathan Waterfall', description: 'Powerful 80m waterfall with a misty viewing area.', latitude: 18.5386, longitude: 98.5997, type: 'viewpoint' },
         { name: 'Royal Twin Pagodas', description: 'Naphamethinidon and Naphaphonphumisiri pagodas built to honor the King and Queen.', latitude: 18.5572, longitude: 98.4867, type: 'attraction', google_maps_url: 'https://maps.google.com/?q=18.5572,98.4867' },
         { name: 'Summit Restaurant', description: 'Small cafe at the summit selling coffee and Thai food.', latitude: 18.5878, longitude: 98.4864, type: 'food' },
+      ],
+      gallery: [
+        { url: 'https://picsum.photos/seed/doi1/800/600', alternativeText: 'Road to Doi Inthanon summit' },
+        { url: 'https://picsum.photos/seed/doi2/800/600', alternativeText: 'Wachirathan Waterfall' },
+        { url: 'https://picsum.photos/seed/doi3/800/600', alternativeText: 'Royal Twin Pagodas in the mist' },
       ],
     },
     'pai-canyon-run': {
@@ -97,6 +107,12 @@ if (!route) {
         { name: 'Pai Canyon', description: 'Narrow ridgeline with spectacular views on both sides. Best at sunset.', latitude: 19.3280, longitude: 98.4810, type: 'viewpoint', google_maps_url: 'https://maps.google.com/?q=19.3280,98.4810' },
         { name: 'Pai Hot Springs', description: 'Natural hot springs in a jungle setting. Small entrance fee.', latitude: 19.3645, longitude: 98.4150, type: 'attraction' },
         { name: 'Blind Curve Zone', description: 'Multiple blind curves between km 60-80. Watch for oncoming trucks in your lane.', latitude: 19.1500, longitude: 98.7900, type: 'warning' },
+      ],
+      gallery: [
+        { url: 'https://picsum.photos/seed/pai1/800/600', alternativeText: 'Route 1095 curves' },
+        { url: 'https://picsum.photos/seed/pai2/800/600', alternativeText: 'Pai Canyon ridgeline' },
+        { url: 'https://picsum.photos/seed/pai3/800/600', alternativeText: 'Jungle waterfall near Pai' },
+        { url: 'https://picsum.photos/seed/pai4/800/600', alternativeText: 'Mountain road at dawn' },
       ],
     },
   };
@@ -189,8 +205,24 @@ const heroImageUrl = route.hero_image?.url
         <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
           About This Route
         </h2>
-        <div set:html={richTextToHtml(route.description)} />
+        <div set:html={renderDescription(route.description)} />
       </div>
+
+      <!-- Gallery -->
+      {route.gallery && route.gallery.length > 0 && (
+        <div class="route-detail__content">
+          <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
+            Photos
+          </h2>
+          <div class="gallery-grid">
+            {route.gallery.map((img) => (
+              <a href={getStrapiMediaUrl(img.url)} target="_blank" rel="noopener noreferrer" class="gallery-item">
+                <img src={getStrapiMediaUrl(img.url)} alt={img.alternativeText || route.title} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       <!-- Best Months -->
       <div class="route-detail__content">
@@ -224,9 +256,6 @@ const heroImageUrl = route.hero_image?.url
           <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
             Points of Interest
           </h2>
-          <p style="color: var(--color-text-secondary); margin-bottom: var(--space-6);">
-            Notable stops and landmarks along this route.
-          </p>
           <div class="poi-grid">
             {route.pois.map((poi) => (
               <div class="poi-card">
@@ -242,12 +271,9 @@ const heroImageUrl = route.hero_image?.url
                     <p class="poi-card__desc">{poi.description}</p>
                   )}
                   <div class="poi-card__meta">
-                    <span class="poi-card__coords">
-                      📍 {poi.latitude.toFixed(4)}, {poi.longitude.toFixed(4)}
-                    </span>
                     {poi.google_maps_url && (
                       <a href={poi.google_maps_url} target="_blank" rel="noopener noreferrer" class="poi-card__maps-link">
-                        Open in Google Maps ↗
+                        📍 Open in Google Maps ↗
                       </a>
                     )}
                   </div>
@@ -343,23 +369,51 @@ const heroImageUrl = route.hero_image?.url
     color: var(--color-text-secondary) !important;
   }
 
-  /* POI Cards */
-  .poi-grid {
+  /* Gallery */
+  .gallery-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
   }
 
   @media (min-width: 768px) {
-    .poi-grid {
-      grid-template-columns: 1fr 1fr;
+    .gallery-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .gallery-item {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    display: block;
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .gallery-item:hover {
+    transform: scale(1.02);
+    border-color: var(--color-accent);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .poi-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .poi-card {
     display: flex;
-    gap: var(--space-4);
-    padding: var(--space-5);
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-5);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -373,23 +427,14 @@ const heroImageUrl = route.hero_image?.url
 
   .poi-card__icon {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-md);
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
-    background: rgba(107, 114, 128, 0.12);
-    color: #6b7280;
+    font-size: 1.2rem;
+    margin-top: 2px;
   }
-
-  .poi-card__icon[data-poi-type="fuel"] { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
-  .poi-card__icon[data-poi-type="viewpoint"] { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
-  .poi-card__icon[data-poi-type="food"] { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
-  .poi-card__icon[data-poi-type="accommodation"] { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
-  .poi-card__icon[data-poi-type="attraction"] { background: rgba(16, 185, 129, 0.12); color: #10b981; }
-  .poi-card__icon[data-poi-type="warning"] { background: rgba(249, 115, 22, 0.12); color: #f97316; }
 
   .poi-card__content {
     flex: 1;
@@ -401,6 +446,7 @@ const heroImageUrl = route.hero_image?.url
     align-items: center;
     gap: var(--space-2);
     margin-bottom: var(--space-1);
+    flex-wrap: wrap;
   }
 
   .poi-card__name {
@@ -409,23 +455,24 @@ const heroImageUrl = route.hero_image?.url
     font-weight: 600;
     color: var(--color-text);
     margin: 0;
+    line-height: 1.2;
   }
 
   .poi-card__type {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-muted);
-    background: var(--color-bg-elevated);
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    padding: 1px 6px;
+    border-radius: var(--radius-sm);
   }
 
   .poi-card__desc {
     font-size: var(--text-sm);
     color: var(--color-text-secondary);
-    margin: var(--space-1) 0;
-    line-height: 1.5;
+    margin: 0 0 var(--space-1) 0;
+    line-height: 1.4;
   }
 
   .poi-card__meta {
@@ -434,12 +481,6 @@ const heroImageUrl = route.hero_image?.url
     gap: var(--space-3);
     margin-top: var(--space-2);
     flex-wrap: wrap;
-  }
-
-  .poi-card__coords {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono, monospace);
   }
 
   .poi-card__maps-link {

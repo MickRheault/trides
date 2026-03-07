@@ -10,8 +10,8 @@ export interface MapPoi extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.Text;
     google_maps_url: Schema.Attribute.String;
-    latitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
-    longitude: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    latitude: Schema.Attribute.Decimal;
+    longitude: Schema.Attribute.Decimal;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     type: Schema.Attribute.Enumeration<
       ['fuel', 'viewpoint', 'food', 'accommodation', 'attraction', 'warning']
