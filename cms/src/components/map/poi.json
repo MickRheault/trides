@@ -15,12 +15,10 @@
             "type": "text"
         },
         "latitude": {
-            "type": "decimal",
-            "required": true
+            "type": "decimal"
         },
         "longitude": {
-            "type": "decimal",
-            "required": true
+            "type": "decimal"
         },
         "type": {
             "type": "enumeration",
