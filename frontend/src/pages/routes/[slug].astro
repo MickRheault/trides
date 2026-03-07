@@ -3,6 +3,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoutes, getRouteBySlug, getStrapiMediaUrl } from '../../lib/strapi';
 import { marked } from 'marked';
 
+/** Extract coordinates from a Google Maps URL if possible */
+function extractCoordinates(url: string | null | undefined): { latitude: number, longitude: number } | null {
+  if (!url) return null;
+  // Match ?q=lat,lng or &q=lat,lng
+  const qMatch = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (qMatch) return { latitude: parseFloat(qMatch[1]), longitude: parseFloat(qMatch[2]) };
+  
+  // Match /@lat,lng
+  const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (atMatch) return { latitude: parseFloat(atMatch[1]), longitude: parseFloat(atMatch[2]) };
+  
+  // Match place/.../lat,lng
+  const placeMatch = url.match(/place\/[^/]*\/(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (placeMatch) return { latitude: parseFloat(placeMatch[1]), longitude: parseFloat(placeMatch[2]) };
+  
+  return null;
+}
+
 /** Convert Strapi richtext (markdown) to HTML */
 function renderDescription(text: string): string {
   if (!text) return '';
@@ -137,6 +155,21 @@ const gpxUrl = route.gpx_files?.[0]?.url
 const heroImageUrl = route.hero_image?.url
   ? getStrapiMediaUrl(route.hero_image.url)
   : null;
+
+// Process POIs to extract coordinates from Google Maps URLs if missing
+if (route.pois) {
+  route.pois = route.pois.map((poi: any) => {
+    if (poi.latitude && poi.longitude) return poi;
+    const coords = extractCoordinates(poi.google_maps_url);
+    if (coords) {
+      return { ...poi, latitude: coords.latitude, longitude: coords.longitude };
+    }
+    return poi;
+  });
+}
+
+// Filter POIs that have valid coordinates for the map
+const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
 ---
 
 <BaseLayout title={route.title} description={route.excerpt}>
@@ -196,8 +229,10 @@ const heroImageUrl = route.hero_image?.url
         <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4);">
           Route Map & Elevation
         </h2>
-        <div id="route-map" data-gpx={gpxUrl}></div>
-        <div id="elevation-chart"></div>
+        <div class="route-detail__map-container">
+          <div id="route-map" data-gpx={gpxUrl} data-pois={JSON.stringify(mapPois)}></div>
+          <div id="elevation-chart"></div>
+        </div>
       </div>
 
       <!-- Description -->
@@ -495,6 +530,14 @@ const heroImageUrl = route.hero_image?.url
     color: var(--color-text);
     text-decoration: underline;
   }
+
+  /* Dark mode OSM hack: inverts the light map to dark and fixes hues */
+  .leaflet-layer,
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
 </style>
 
 <!-- Load Leaflet & Elevation from CDN (avoids SSR issues with Astro) -->
@@ -517,10 +560,9 @@ const heroImageUrl = route.hero_image?.url
       scrollWheelZoom: false,
     }).setView([19.0, 98.5], 8);
 
-    // Dark-themed map tiles (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-      subdomains: 'abcd',
+    // Standard OpenStreetMap tiles (darkened via CSS filter above)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 19,
     }).addTo(map);
 
@@ -550,6 +592,40 @@ const heroImageUrl = route.hero_image?.url
       const bounds = elevation.getBounds();
       if (bounds && bounds.isValid()) {
         map.fitBounds(bounds, { padding: [30, 30] });
+      }
+
+      // Add POI markers after map bounds are set
+      try {
+        const poisRaw = mapContainer.dataset.pois;
+        if (poisRaw) {
+          const pois = JSON.parse(poisRaw);
+          const icons = {
+            fuel: '⛽', viewpoint: '👁️', food: '🍜',
+            accommodation: '🏠', attraction: '⭐', warning: '⚠️'
+          };
+          
+          pois.forEach(poi => {
+            const emoji = icons[poi.type] || '📍';
+            const icon = L.divIcon({
+              html: `<div style="font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${emoji}</div>`,
+              className: 'poi-marker-icon',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12],
+              popupAnchor: [0, -12]
+            });
+
+            L.marker([poi.latitude, poi.longitude], { icon })
+              .addTo(map)
+              .bindPopup(`
+                <div style="font-family: var(--font-body); padding: 4px;">
+                  <strong style="display: block; font-family: var(--font-display); font-size: 14px; margin-bottom: 4px;">${poi.name}</strong>
+                  <span style="font-size: 11px; text-transform: uppercase; color: #666;">${poi.type}</span>
+                </div>
+              `);
+          });
+        }
+      } catch (e) {
+        console.error("Failed to parse POIs for map", e);
       }
     });
   });
