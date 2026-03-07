@@ -387,6 +387,31 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiMotorcycleMotorcycle extends Struct.CollectionTypeSchema {
+  collectionName: 'motorcycles';
+  info: {
+    description: 'Categories of motorcycles suitable for routes';
+    displayName: 'Motorcycle';
+    pluralName: 'motorcycles';
+    singularName: 'motorcycle';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::motorcycle.motorcycle'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required & Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    routes: Schema.Attribute.Relation<'manyToMany', 'api::route.route'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+  };
+}
+
 export interface ApiProvinceProvince extends Struct.CollectionTypeSchema {
   collectionName: 'provinces';
   info: {
@@ -415,6 +440,31 @@ export interface ApiProvinceProvince extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiRoadTypeRoadType extends Struct.CollectionTypeSchema {
+  collectionName: 'road_types';
+  info: {
+    description: 'Categories of road terrain';
+    displayName: 'RoadType';
+    pluralName: 'road-types';
+    singularName: 'road-type';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::road-type.road-type'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required & Schema.Attribute.Unique;
+    publishedAt: Schema.Attribute.DateTime;
+    routes: Schema.Attribute.Relation<'manyToMany', 'api::route.route'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
+  };
+}
+
 export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
   collectionName: 'routes';
   info: {
@@ -427,7 +477,6 @@ export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    best_months: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
@@ -443,13 +492,13 @@ export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::route.route'> &
       Schema.Attribute.Private;
+    motorcycles: Schema.Attribute.Relation<'manyToMany', 'api::motorcycle.motorcycle'>;
     pois: Schema.Attribute.Component<'map.poi', true>;
     provinces: Schema.Attribute.Relation<'manyToMany', 'api::province.province'>;
     publishedAt: Schema.Attribute.DateTime;
     region: Schema.Attribute.Enumeration<['north', 'northeast', 'central', 'south']> &
       Schema.Attribute.Required;
-    road_type: Schema.Attribute.Enumeration<['paved', 'mixed', 'off-road']> &
-      Schema.Attribute.Required;
+    road_types: Schema.Attribute.Relation<'manyToMany', 'api::road-type.road-type'>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -886,7 +935,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::motorcycle.motorcycle': ApiMotorcycleMotorcycle;
       'api::province.province': ApiProvinceProvince;
+      'api::road-type.road-type': ApiRoadTypeRoadType;
       'api::route.route': ApiRouteRoute;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

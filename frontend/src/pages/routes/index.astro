@@ -11,43 +11,49 @@ if (routes.length === 0) {
       id: 1, documentId: '1',
       title: 'Mae Hong Son Loop', slug: 'mae-hong-son-loop',
       description: '', excerpt: 'The legendary 600km loop through Northern Thailand\'s most dramatic mountain scenery. Winding roads, hill tribe villages, and breathtaking viewpoints.',
-      distance_km: 600, estimated_hours: 16, difficulty: 'intermediate', road_type: 'paved',
-      region: 'north', best_months: 'Nov - Feb',
+      difficulty: 'intermediate', road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      motorcycles: [{ id: 1, documentId: 'mc1', name: 'Touring' }, { id: 2, documentId: 'mc2', name: 'Adventure' }],
+      region: 'north',
     },
     {
       id: 2, documentId: '2',
       title: 'Doi Inthanon Summit', slug: 'doi-inthanon-summit',
       description: '', excerpt: 'Ride to the rooftop of Thailand. The highest peak at 2,565m offers cool temperatures, cascading waterfalls, and royal pagodas in the clouds.',
-      distance_km: 120, estimated_hours: 4, difficulty: 'beginner', road_type: 'paved',
-      region: 'north', best_months: 'Nov - Mar',
+      difficulty: 'beginner', road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      motorcycles: [{ id: 3, documentId: 'mc3', name: 'Scooter' }, { id: 1, documentId: 'mc1', name: 'Touring' }],
+      region: 'north',
     },
     {
       id: 3, documentId: '3',
       title: 'Pai Canyon Run', slug: 'pai-canyon-run',
       description: '', excerpt: 'Navigate 762 curves from Chiang Mai to the laidback town of Pai. A challenging ride rewarded with hot springs, waterfalls, and stunning sunsets.',
-      distance_km: 150, estimated_hours: 5, difficulty: 'advanced', road_type: 'mixed',
-      region: 'north', best_months: 'Nov - Feb',
+      difficulty: 'advanced', road_types: [{ id: 2, documentId: 'rt2', name: 'mixed' }],
+      motorcycles: [{ id: 2, documentId: 'mc2', name: 'Adventure' }, { id: 4, documentId: 'mc4', name: 'Dual Sport' }],
+      region: 'north',
     },
     {
       id: 4, documentId: '4',
       title: 'Samoeng Loop', slug: 'samoeng-loop',
       description: '', excerpt: 'A perfect half-day loop from Chiang Mai through rural countryside, villages, and gentle mountain roads. Great for beginners.',
-      distance_km: 100, estimated_hours: 3, difficulty: 'beginner', road_type: 'paved',
-      region: 'north', best_months: 'Oct - Mar',
+      difficulty: 'beginner', road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      motorcycles: [{ id: 3, documentId: 'mc3', name: 'Scooter' }],
+      region: 'north',
     },
     {
       id: 5, documentId: '5',
       title: 'Golden Triangle Border Run', slug: 'golden-triangle-border-run',
       description: '', excerpt: 'Ride along the Mekong River to where Thailand, Laos, and Myanmar meet. A historic and scenic journey through Chiang Rai province.',
-      distance_km: 280, estimated_hours: 8, difficulty: 'intermediate', road_type: 'paved',
-      region: 'north', best_months: 'Nov - Feb',
+      difficulty: 'intermediate', road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
+      motorcycles: [{ id: 1, documentId: 'mc1', name: 'Touring' }],
+      region: 'north',
     },
     {
       id: 6, documentId: '6',
       title: 'Khao Sok Jungle Ride', slug: 'khao-sok-jungle-ride',
       description: '', excerpt: 'Cut through the dense rainforests of Southern Thailand to reach Khao Sok National Park. Limestone cliffs, hidden lakes, and wild monkeys.',
-      distance_km: 180, estimated_hours: 5, difficulty: 'intermediate', road_type: 'mixed',
-      region: 'south', best_months: 'Dec - Apr',
+      difficulty: 'intermediate', road_types: [{ id: 2, documentId: 'rt2', name: 'mixed' }],
+      motorcycles: [{ id: 2, documentId: 'mc2', name: 'Adventure' }, { id: 4, documentId: 'mc4', name: 'Dual Sport' }],
+      region: 'south',
     },
   ] as any;
 }
@@ -99,6 +105,17 @@ if (routes.length === 0) {
               <span class="route-card__region">{route.region} Thailand</span>
               <h3 class="route-card__title">{route.title}</h3>
               <p class="route-card__excerpt">{route.excerpt}</p>
+              
+              {route.motorcycles && route.motorcycles.length > 0 && (
+                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; margin-bottom: 0.5rem; gap: 4px;">
+                  {route.motorcycles.map((mc: any) => (
+                    <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: 2px 8px; border-radius: 4px; font-size: var(--text-xs); color: var(--color-text-muted);">
+                      🏍️ {mc.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
               <div class="route-card__stats">
                 <div class="route-card__stat">
                   <strong>{route.distance_km} km</strong>
@@ -107,10 +124,7 @@ if (routes.length === 0) {
                   <strong>{route.estimated_hours}h</strong> ride
                 </div>
                 <div class="route-card__stat">
-                  <strong>{route.road_type}</strong>
-                </div>
-                <div class="route-card__stat">
-                  <strong>{route.best_months}</strong>
+                  <strong>{route.road_types?.map((rt: any) => rt.name).join(', ') || 'N/A'}</strong>
                 </div>
               </div>
             </div>

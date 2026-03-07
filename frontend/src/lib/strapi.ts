@@ -37,6 +37,18 @@ export interface Province {
   region: 'north' | 'northeast' | 'central' | 'south';
 }
 
+export interface RoadType {
+  id: number;
+  documentId: string;
+  name: string;
+}
+
+export interface Motorcycle {
+  id: number;
+  documentId: string;
+  name: string;
+}
+
 export interface Route {
   id: number;
   documentId: string;
@@ -47,9 +59,9 @@ export interface Route {
   distance_km: number;
   estimated_hours: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
-  road_type: 'paved' | 'mixed' | 'off-road';
+  road_types?: RoadType[];
+  motorcycles?: Motorcycle[];
   region: 'north' | 'northeast' | 'central' | 'south';
-  best_months: string;
   google_maps_url?: string;
   hero_image?: {
     url: string;

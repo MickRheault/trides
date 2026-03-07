@@ -1,0 +1,27 @@
+{
+    "kind": "collectionType",
+    "collectionName": "road_types",
+    "info": {
+        "singularName": "road-type",
+        "pluralName": "road-types",
+        "displayName": "RoadType",
+        "description": "Categories of road terrain"
+    },
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "unique": true
+        },
+        "routes": {
+            "type": "relation",
+            "relation": "manyToMany",
+            "target": "api::route.route",
+            "mappedBy": "road_types"
+        }
+    }
+}
