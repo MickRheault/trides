@@ -84,15 +84,19 @@ export interface Route {
  * Fetch all routes from Strapi
  */
 export async function getRoutes(): Promise<Route[]> {
+  const url = `${STRAPI_URL}/api/routes?populate=*&sort=title:asc`;
+  console.log(`[DEBUG] Fetching routes from: ${url}`);
   try {
-    const res = await fetch(
-      `${STRAPI_URL}/api/routes?populate[road_types]=*&populate[motorcycles]=*&populate[hero_image]=*&populate[gallery]=*&populate[pois]=*&populate[provinces]=*&sort=title:asc`
-    );
-    if (!res.ok) throw new Error(`Failed to fetch routes: ${res.status}`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`[DEBUG] Fetch failed with status ${res.status}`);
+      throw new Error(`Failed to fetch routes: ${res.status}`);
+    }
     const json: StrapiResponse<Route[]> = await res.json();
+    console.log(`[DEBUG] Fetched ${json.data.length} routes from Strapi`);
     return json.data;
   } catch (error) {
-    console.warn('Could not fetch routes from Strapi:', error);
+    console.warn('[DEBUG] Could not fetch routes from Strapi:', error);
     return [];
   }
 }
@@ -101,15 +105,19 @@ export async function getRoutes(): Promise<Route[]> {
  * Fetch a single route by slug
  */
 export async function getRouteBySlug(slug: string): Promise<Route | null> {
+  const url = `${STRAPI_URL}/api/routes?filters[slug][$eq]=${slug}&populate=*`;
+  console.log(`[DEBUG] Fetching route by slug from: ${url}`);
   try {
-    const res = await fetch(
-      `${STRAPI_URL}/api/routes?filters[slug][$eq]=${slug}&populate[road_types]=*&populate[motorcycles]=*&populate[hero_image]=*&populate[gallery]=*&populate[pois]=*&populate[provinces]=*`
-    );
-    if (!res.ok) throw new Error(`Failed to fetch route: ${res.status}`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(`[DEBUG] Fetch failed with status ${res.status}`);
+      throw new Error(`Failed to fetch route: ${res.status}`);
+    }
     const json: StrapiResponse<Route[]> = await res.json();
+    console.log(`[DEBUG] Fetched route data for slug "${slug}"`);
     return json.data[0] ?? null;
   } catch (error) {
-    console.warn('Could not fetch route from Strapi:', error);
+    console.warn('[DEBUG] Could not fetch route from Strapi:', error);
     return null;
   }
 }
