@@ -86,7 +86,7 @@ export interface Route {
 export async function getRoutes(): Promise<Route[]> {
   try {
     const res = await fetch(
-      `${STRAPI_URL}/api/routes?populate=*&sort=title:asc`
+      `${STRAPI_URL}/api/routes?populate[road_types]=*&populate[motorcycles]=*&populate[hero_image]=*&populate[gallery]=*&populate[pois]=*&populate[provinces]=*&sort=title:asc`
     );
     if (!res.ok) throw new Error(`Failed to fetch routes: ${res.status}`);
     const json: StrapiResponse<Route[]> = await res.json();
@@ -103,7 +103,7 @@ export async function getRoutes(): Promise<Route[]> {
 export async function getRouteBySlug(slug: string): Promise<Route | null> {
   try {
     const res = await fetch(
-      `${STRAPI_URL}/api/routes?filters[slug][$eq]=${slug}&populate=*`
+      `${STRAPI_URL}/api/routes?filters[slug][$eq]=${slug}&populate[road_types]=*&populate[motorcycles]=*&populate[hero_image]=*&populate[gallery]=*&populate[pois]=*&populate[provinces]=*`
     );
     if (!res.ok) throw new Error(`Failed to fetch route: ${res.status}`);
     const json: StrapiResponse<Route[]> = await res.json();
