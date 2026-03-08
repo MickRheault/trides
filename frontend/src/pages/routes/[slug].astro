@@ -236,7 +236,9 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
         </div>
       </div>
 
-        <div style="margin: var(--space-12) 0; padding-top: var(--space-8); border-top: 1px solid var(--color-border); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
+      <!-- Metadata & About -->
+      <div class="route-detail__content">
+        <div style="margin: var(--space-8) 0 var(--space-12); padding-top: var(--space-8); border-top: 1px solid var(--color-border); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
           <div>
             <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Road Types</h3>
             <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
@@ -263,6 +265,7 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
           About This Route
         </h2>
         <div set:html={renderDescription(route.description)} />
+      </div>
 
       <!-- GPX Downloads -->
       {route.gpx_files && route.gpx_files.length > 0 && (
