@@ -3,272 +3,273 @@ import fs from 'fs';
 import path from 'path';
 
 function loadSchema(schemaPath: string) {
-    const fullPath = path.resolve(__dirname, '..', schemaPath);
-    const content = fs.readFileSync(fullPath, 'utf-8');
-    return JSON.parse(content);
+  const fullPath = path.resolve(__dirname, '..', schemaPath);
+  const content = fs.readFileSync(fullPath, 'utf-8');
+  return JSON.parse(content);
 }
 
 // --- Route Schema ---
 
 describe('Route content type schema', () => {
-    const schema = loadSchema('src/api/route/content-types/route/schema.json');
+  const schema = loadSchema('src/api/route/content-types/route/schema.json');
 
-    it('is a collection type', () => {
-        expect(schema.kind).toBe('collectionType');
-        expect(schema.collectionName).toBe('routes');
+  it('is a collection type', () => {
+    expect(schema.kind).toBe('collectionType');
+    expect(schema.collectionName).toBe('routes');
+  });
+
+  it('has correct display info', () => {
+    expect(schema.info.singularName).toBe('route');
+    expect(schema.info.pluralName).toBe('routes');
+    expect(schema.info.displayName).toBe('Route');
+  });
+
+  it('has draft and publish enabled', () => {
+    expect(schema.options.draftAndPublish).toBe(true);
+  });
+
+  describe('required fields', () => {
+    it('has title (string, required)', () => {
+      expect(schema.attributes.title).toEqual({ type: 'string', required: true });
     });
 
-    it('has correct display info', () => {
-        expect(schema.info.singularName).toBe('route');
-        expect(schema.info.pluralName).toBe('routes');
-        expect(schema.info.displayName).toBe('Route');
+    it('has slug (UID from title, required)', () => {
+      expect(schema.attributes.slug.type).toBe('uid');
+      expect(schema.attributes.slug.targetField).toBe('title');
+      expect(schema.attributes.slug.required).toBe(true);
     });
 
-    it('has draft and publish enabled', () => {
-        expect(schema.options.draftAndPublish).toBe(true);
+    it('has difficulty enum with correct values', () => {
+      expect(schema.attributes.difficulty.type).toBe('enumeration');
+      expect(schema.attributes.difficulty.enum).toEqual(['beginner', 'intermediate', 'advanced']);
+      expect(schema.attributes.difficulty.required).toBe(true);
     });
 
-    describe('required fields', () => {
-        it('has title (string, required)', () => {
-            expect(schema.attributes.title).toEqual({ type: 'string', required: true });
-        });
-
-        it('has slug (UID from title, required)', () => {
-            expect(schema.attributes.slug.type).toBe('uid');
-            expect(schema.attributes.slug.targetField).toBe('title');
-            expect(schema.attributes.slug.required).toBe(true);
-        });
-
-        it('has difficulty enum with correct values', () => {
-            expect(schema.attributes.difficulty.type).toBe('enumeration');
-            expect(schema.attributes.difficulty.enum).toEqual(['beginner', 'intermediate', 'advanced']);
-            expect(schema.attributes.difficulty.required).toBe(true);
-        });
-
-        it('has road_types relation', () => {
-            expect(schema.attributes.road_types.type).toBe('relation');
-            expect(schema.attributes.road_types.relation).toBe('manyToMany');
-            expect(schema.attributes.road_types.target).toBe('api::road-type.road-type');
-        });
-
-        it('has motorcycles relation', () => {
-            expect(schema.attributes.motorcycles.type).toBe('relation');
-            expect(schema.attributes.motorcycles.relation).toBe('manyToMany');
-            expect(schema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
-        });
-
-        it('has region enum with correct values', () => {
-            expect(schema.attributes.region.type).toBe('enumeration');
-            expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
-            expect(schema.attributes.region.required).toBe(true);
-        });
+    it('has road_types relation', () => {
+      expect(schema.attributes.road_types.type).toBe('relation');
+      expect(schema.attributes.road_types.relation).toBe('manyToMany');
+      expect(schema.attributes.road_types.target).toBe('api::road-type.road-type');
     });
 
-    describe('optional fields', () => {
-        it('has description (richtext)', () => {
-            expect(schema.attributes.description.type).toBe('richtext');
-        });
-
-        it('has excerpt (text)', () => {
-            expect(schema.attributes.excerpt.type).toBe('text');
-        });
-
-        it('has distance_km (decimal)', () => {
-            expect(schema.attributes.distance_km.type).toBe('decimal');
-        });
-
-        it('has estimated_hours (decimal)', () => {
-            expect(schema.attributes.estimated_hours.type).toBe('decimal');
-        });
-
-
-
-        it('has google_maps_url (text)', () => {
-            expect(schema.attributes.google_maps_url.type).toBe('text');
-        });
+    it('has motorcycles relation', () => {
+      expect(schema.attributes.motorcycles.type).toBe('relation');
+      expect(schema.attributes.motorcycles.relation).toBe('manyToMany');
+      expect(schema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
     });
 
-    describe('media fields', () => {
-        it('has hero_image (single image)', () => {
-            expect(schema.attributes.hero_image.type).toBe('media');
-            expect(schema.attributes.hero_image.multiple).toBe(false);
-            expect(schema.attributes.hero_image.allowedTypes).toEqual(['images']);
-        });
+    it('has region enum with correct values', () => {
+      expect(schema.attributes.region.type).toBe('enumeration');
+      expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
+      expect(schema.attributes.region.required).toBe(true);
+    });
+  });
 
-        it('has gpx_files (multiple, no type restriction)', () => {
-            expect(schema.attributes.gpx_files.type).toBe('media');
-            expect(schema.attributes.gpx_files.multiple).toBe(true);
-            expect(schema.attributes.gpx_files.allowedTypes).toBeUndefined();
-        });
-
-        it('has gallery (multiple images)', () => {
-            expect(schema.attributes.gallery.type).toBe('media');
-            expect(schema.attributes.gallery.multiple).toBe(true);
-            expect(schema.attributes.gallery.allowedTypes).toEqual(['images']);
-        });
+  describe('optional fields', () => {
+    it('has description (richtext)', () => {
+      expect(schema.attributes.description.type).toBe('richtext');
     });
 
-    describe('relations and components', () => {
-        it('has pois as repeatable component', () => {
-            expect(schema.attributes.pois.type).toBe('component');
-            expect(schema.attributes.pois.repeatable).toBe(true);
-            expect(schema.attributes.pois.component).toBe('map.poi');
-        });
-
-        it('has provinces as manyToMany relation', () => {
-            expect(schema.attributes.provinces.type).toBe('relation');
-            expect(schema.attributes.provinces.relation).toBe('manyToMany');
-            expect(schema.attributes.provinces.target).toBe('api::province.province');
-        });
+    it('has excerpt (text)', () => {
+      expect(schema.attributes.excerpt.type).toBe('text');
     });
+
+    it('has distance_km (decimal)', () => {
+      expect(schema.attributes.distance_km.type).toBe('decimal');
+    });
+
+    it('has estimated_hours (decimal)', () => {
+      expect(schema.attributes.estimated_hours.type).toBe('decimal');
+    });
+
+    it('has google_maps_url (text)', () => {
+      expect(schema.attributes.google_maps_url.type).toBe('text');
+    });
+  });
+
+  describe('media fields', () => {
+    it('has hero_image (single image)', () => {
+      expect(schema.attributes.hero_image.type).toBe('media');
+      expect(schema.attributes.hero_image.multiple).toBe(false);
+      expect(schema.attributes.hero_image.allowedTypes).toEqual(['images']);
+    });
+
+    it('has gpx_files (multiple, no type restriction)', () => {
+      expect(schema.attributes.gpx_files.type).toBe('media');
+      expect(schema.attributes.gpx_files.multiple).toBe(true);
+      expect(schema.attributes.gpx_files.allowedTypes).toBeUndefined();
+    });
+
+    it('has gallery (multiple images)', () => {
+      expect(schema.attributes.gallery.type).toBe('media');
+      expect(schema.attributes.gallery.multiple).toBe(true);
+      expect(schema.attributes.gallery.allowedTypes).toEqual(['images']);
+    });
+  });
+
+  describe('relations and components', () => {
+    it('has pois as repeatable component', () => {
+      expect(schema.attributes.pois.type).toBe('component');
+      expect(schema.attributes.pois.repeatable).toBe(true);
+      expect(schema.attributes.pois.component).toBe('map.poi');
+    });
+
+    it('has provinces as manyToMany relation', () => {
+      expect(schema.attributes.provinces.type).toBe('relation');
+      expect(schema.attributes.provinces.relation).toBe('manyToMany');
+      expect(schema.attributes.provinces.target).toBe('api::province.province');
+    });
+  });
 });
 
 // --- Province Schema ---
 
 describe('Province content type schema', () => {
-    const schema = loadSchema('src/api/province/content-types/province/schema.json');
+  const schema = loadSchema('src/api/province/content-types/province/schema.json');
 
-    it('is a collection type', () => {
-        expect(schema.kind).toBe('collectionType');
-        expect(schema.collectionName).toBe('provinces');
-    });
+  it('is a collection type', () => {
+    expect(schema.kind).toBe('collectionType');
+    expect(schema.collectionName).toBe('provinces');
+  });
 
-    it('has draft and publish disabled', () => {
-        expect(schema.options.draftAndPublish).toBe(false);
-    });
+  it('has draft and publish disabled', () => {
+    expect(schema.options.draftAndPublish).toBe(false);
+  });
 
-    it('has name (required, unique)', () => {
-        expect(schema.attributes.name.type).toBe('string');
-        expect(schema.attributes.name.required).toBe(true);
-        expect(schema.attributes.name.unique).toBe(true);
-    });
+  it('has name (required, unique)', () => {
+    expect(schema.attributes.name.type).toBe('string');
+    expect(schema.attributes.name.required).toBe(true);
+    expect(schema.attributes.name.unique).toBe(true);
+  });
 
-    it('has name_thai (optional string)', () => {
-        expect(schema.attributes.name_thai.type).toBe('string');
-    });
+  it('has name_thai (optional string)', () => {
+    expect(schema.attributes.name_thai.type).toBe('string');
+  });
 
-    it('has region enum matching Route regions', () => {
-        expect(schema.attributes.region.type).toBe('enumeration');
-        expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
-    });
+  it('has region enum matching Route regions', () => {
+    expect(schema.attributes.region.type).toBe('enumeration');
+    expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
+  });
 
-    it('has routes as manyToMany relation back to Route', () => {
-        expect(schema.attributes.routes.type).toBe('relation');
-        expect(schema.attributes.routes.relation).toBe('manyToMany');
-        expect(schema.attributes.routes.target).toBe('api::route.route');
-        expect(schema.attributes.routes.mappedBy).toBe('provinces');
-    });
+  it('has routes as manyToMany relation back to Route', () => {
+    expect(schema.attributes.routes.type).toBe('relation');
+    expect(schema.attributes.routes.relation).toBe('manyToMany');
+    expect(schema.attributes.routes.target).toBe('api::route.route');
+    expect(schema.attributes.routes.mappedBy).toBe('provinces');
+  });
 });
 
 // --- POI Component ---
 
 describe('POI component schema', () => {
-    const schema = loadSchema('src/components/map/poi.json');
+  const schema = loadSchema('src/components/map/poi.json');
 
-    it('has correct collection name', () => {
-        expect(schema.collectionName).toBe('components_map_pois');
-    });
+  it('has correct collection name', () => {
+    expect(schema.collectionName).toBe('components_map_pois');
+  });
 
-    it('has name (required string)', () => {
-        expect(schema.attributes.name.type).toBe('string');
-        expect(schema.attributes.name.required).toBe(true);
-    });
+  it('has name (required string)', () => {
+    expect(schema.attributes.name.type).toBe('string');
+    expect(schema.attributes.name.required).toBe(true);
+  });
 
-    it('has latitude (optional decimal)', () => {
-        expect(schema.attributes.latitude.type).toBe('decimal');
-        expect(schema.attributes.latitude.required).toBeUndefined();
-    });
+  it('has latitude (optional decimal)', () => {
+    expect(schema.attributes.latitude.type).toBe('decimal');
+    expect(schema.attributes.latitude.required).toBeUndefined();
+  });
 
-    it('has longitude (optional decimal)', () => {
-        expect(schema.attributes.longitude.type).toBe('decimal');
-        expect(schema.attributes.longitude.required).toBeUndefined();
-    });
+  it('has longitude (optional decimal)', () => {
+    expect(schema.attributes.longitude.type).toBe('decimal');
+    expect(schema.attributes.longitude.required).toBeUndefined();
+  });
 
-    it('has type enum with all POI categories', () => {
-        expect(schema.attributes.type.type).toBe('enumeration');
-        expect(schema.attributes.type.enum).toEqual([
-            'fuel', 'viewpoint', 'food', 'accommodation', 'attraction', 'warning',
-        ]);
-        expect(schema.attributes.type.required).toBe(true);
-    });
+  it('has type enum with all POI categories', () => {
+    expect(schema.attributes.type.type).toBe('enumeration');
+    expect(schema.attributes.type.enum).toEqual([
+      'fuel',
+      'viewpoint',
+      'food',
+      'accommodation',
+      'attraction',
+      'warning',
+    ]);
+    expect(schema.attributes.type.required).toBe(true);
+  });
 
-    it('has google_maps_url (optional text)', () => {
-        expect(schema.attributes.google_maps_url.type).toBe('text');
-    });
+  it('has google_maps_url (optional text)', () => {
+    expect(schema.attributes.google_maps_url.type).toBe('text');
+  });
 
-    it('has description (optional text)', () => {
-        expect(schema.attributes.description.type).toBe('text');
-    });
+  it('has description (optional text)', () => {
+    expect(schema.attributes.description.type).toBe('text');
+  });
 });
 
 // --- Motorcycle Schema ---
 
 describe('Motorcycle content type schema', () => {
-    const schema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
+  const schema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
 
-    it('is a collection type', () => {
-        expect(schema.kind).toBe('collectionType');
-        expect(schema.collectionName).toBe('motorcycles');
-    });
+  it('is a collection type', () => {
+    expect(schema.kind).toBe('collectionType');
+    expect(schema.collectionName).toBe('motorcycles');
+  });
 
-    it('has draft and publish disabled', () => {
-        expect(schema.options.draftAndPublish).toBe(false);
-    });
+  it('has draft and publish disabled', () => {
+    expect(schema.options.draftAndPublish).toBe(false);
+  });
 
-    it('has name (required, unique)', () => {
-        expect(schema.attributes.name.type).toBe('string');
-        expect(schema.attributes.name.required).toBe(true);
-        expect(schema.attributes.name.unique).toBe(true);
-    });
+  it('has name (required, unique)', () => {
+    expect(schema.attributes.name.type).toBe('string');
+    expect(schema.attributes.name.required).toBe(true);
+    expect(schema.attributes.name.unique).toBe(true);
+  });
 
-    it('has routes as manyToMany relation back to Route', () => {
-        expect(schema.attributes.routes.type).toBe('relation');
-        expect(schema.attributes.routes.relation).toBe('manyToMany');
-        expect(schema.attributes.routes.target).toBe('api::route.route');
-        expect(schema.attributes.routes.mappedBy).toBe('motorcycles');
-    });
+  it('has routes as manyToMany relation back to Route', () => {
+    expect(schema.attributes.routes.type).toBe('relation');
+    expect(schema.attributes.routes.relation).toBe('manyToMany');
+    expect(schema.attributes.routes.target).toBe('api::route.route');
+    expect(schema.attributes.routes.mappedBy).toBe('motorcycles');
+  });
 });
 
 // --- Cross-schema consistency ---
 
 describe('Schema consistency', () => {
-    const routeSchema = loadSchema('src/api/route/content-types/route/schema.json');
-    const provinceSchema = loadSchema('src/api/province/content-types/province/schema.json');
-    const roadTypeSchema = loadSchema('src/api/road-type/content-types/road-type/schema.json');
-    const motorcycleSchema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
+  const routeSchema = loadSchema('src/api/route/content-types/route/schema.json');
+  const provinceSchema = loadSchema('src/api/province/content-types/province/schema.json');
+  const roadTypeSchema = loadSchema('src/api/road-type/content-types/road-type/schema.json');
+  const motorcycleSchema = loadSchema('src/api/motorcycle/content-types/motorcycle/schema.json');
 
-    it('Route and Province region enums match', () => {
-        expect(routeSchema.attributes.region.enum).toEqual(
-            provinceSchema.attributes.region.enum
-        );
-    });
+  it('Route and Province region enums match', () => {
+    expect(routeSchema.attributes.region.enum).toEqual(provinceSchema.attributes.region.enum);
+  });
 
-    it('Route→Province relation matches Province→Route inverse', () => {
-        expect(routeSchema.attributes.provinces.target).toBe('api::province.province');
-        expect(routeSchema.attributes.provinces.inversedBy).toBe('routes');
-        expect(provinceSchema.attributes.routes.target).toBe('api::route.route');
-        expect(provinceSchema.attributes.routes.mappedBy).toBe('provinces');
-    });
+  it('Route→Province relation matches Province→Route inverse', () => {
+    expect(routeSchema.attributes.provinces.target).toBe('api::province.province');
+    expect(routeSchema.attributes.provinces.inversedBy).toBe('routes');
+    expect(provinceSchema.attributes.routes.target).toBe('api::route.route');
+    expect(provinceSchema.attributes.routes.mappedBy).toBe('provinces');
+  });
 
-    it('Route→RoadType relation matches RoadType→Route inverse', () => {
-        expect(routeSchema.attributes.road_types.target).toBe('api::road-type.road-type');
-        expect(routeSchema.attributes.road_types.inversedBy).toBe('routes');
-        expect(roadTypeSchema.attributes.routes.target).toBe('api::route.route');
-        expect(roadTypeSchema.attributes.routes.mappedBy).toBe('road_types');
-    });
+  it('Route→RoadType relation matches RoadType→Route inverse', () => {
+    expect(routeSchema.attributes.road_types.target).toBe('api::road-type.road-type');
+    expect(routeSchema.attributes.road_types.inversedBy).toBe('routes');
+    expect(roadTypeSchema.attributes.routes.target).toBe('api::route.route');
+    expect(roadTypeSchema.attributes.routes.mappedBy).toBe('road_types');
+  });
 
-    it('Route→Motorcycle relation matches Motorcycle→Route inverse', () => {
-        expect(routeSchema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
-        expect(routeSchema.attributes.motorcycles.inversedBy).toBe('routes');
-        expect(motorcycleSchema.attributes.routes.target).toBe('api::route.route');
-        expect(motorcycleSchema.attributes.routes.mappedBy).toBe('motorcycles');
-    });
+  it('Route→Motorcycle relation matches Motorcycle→Route inverse', () => {
+    expect(routeSchema.attributes.motorcycles.target).toBe('api::motorcycle.motorcycle');
+    expect(routeSchema.attributes.motorcycles.inversedBy).toBe('routes');
+    expect(motorcycleSchema.attributes.routes.target).toBe('api::route.route');
+    expect(motorcycleSchema.attributes.routes.mappedBy).toBe('motorcycles');
+  });
 
-    it('all schemas are valid JSON', () => {
-        // If we got here without errors, all schemas loaded successfully
-        expect(routeSchema).toBeDefined();
-        expect(provinceSchema).toBeDefined();
-        expect(roadTypeSchema).toBeDefined();
-        expect(motorcycleSchema).toBeDefined();
-    });
+  it('all schemas are valid JSON', () => {
+    // If we got here without errors, all schemas loaded successfully
+    expect(routeSchema).toBeDefined();
+    expect(provinceSchema).toBeDefined();
+    expect(roadTypeSchema).toBeDefined();
+    expect(motorcycleSchema).toBeDefined();
+  });
 });

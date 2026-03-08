@@ -27,5 +27,5 @@ export default {
    * An asynchronous bootstrap function that runs before
    * your application gets started.
    */
-  bootstrap() { },
+  bootstrap() {},
 };

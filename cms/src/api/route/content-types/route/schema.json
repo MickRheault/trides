@@ -1,100 +1,87 @@
 {
-    "kind": "collectionType",
-    "collectionName": "routes",
-    "info": {
-        "singularName": "route",
-        "pluralName": "routes",
-        "displayName": "Route",
-        "description": "Motorcycle routes in Thailand"
+  "kind": "collectionType",
+  "collectionName": "routes",
+  "info": {
+    "singularName": "route",
+    "pluralName": "routes",
+    "displayName": "Route",
+    "description": "Motorcycle routes in Thailand"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
     },
-    "options": {
-        "draftAndPublish": true
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
     },
-    "pluginOptions": {},
-    "attributes": {
-        "title": {
-            "type": "string",
-            "required": true
-        },
-        "slug": {
-            "type": "uid",
-            "targetField": "title",
-            "required": true
-        },
-        "description": {
-            "type": "richtext"
-        },
-        "excerpt": {
-            "type": "text"
-        },
-        "distance_km": {
-            "type": "decimal"
-        },
-        "estimated_hours": {
-            "type": "decimal"
-        },
-        "difficulty": {
-            "type": "enumeration",
-            "enum": [
-                "beginner",
-                "intermediate",
-                "advanced"
-            ],
-            "required": true
-        },
-        "road_types": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::road-type.road-type",
-            "inversedBy": "routes"
-        },
-        "region": {
-            "type": "enumeration",
-            "enum": [
-                "north",
-                "northeast",
-                "central",
-                "south"
-            ],
-            "required": true
-        },
-        "hero_image": {
-            "type": "media",
-            "multiple": false,
-            "allowedTypes": [
-                "images"
-            ]
-        },
-        "gpx_files": {
-            "type": "media",
-            "multiple": true
-        },
-        "gallery": {
-            "type": "media",
-            "multiple": true,
-            "allowedTypes": [
-                "images"
-            ]
-        },
-        "google_maps_url": {
-            "type": "text"
-        },
-        "pois": {
-            "type": "component",
-            "repeatable": true,
-            "component": "map.poi"
-        },
-        "provinces": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::province.province",
-            "inversedBy": "routes"
-        },
-        "motorcycles": {
-            "type": "relation",
-            "relation": "manyToMany",
-            "target": "api::motorcycle.motorcycle",
-            "inversedBy": "routes"
-        }
+    "description": {
+      "type": "richtext"
+    },
+    "excerpt": {
+      "type": "text"
+    },
+    "distance_km": {
+      "type": "decimal"
+    },
+    "estimated_hours": {
+      "type": "decimal"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": ["beginner", "intermediate", "advanced"],
+      "required": true
+    },
+    "road_types": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::road-type.road-type",
+      "inversedBy": "routes"
+    },
+    "region": {
+      "type": "enumeration",
+      "enum": ["north", "northeast", "central", "south"],
+      "required": true
+    },
+    "hero_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "gpx_files": {
+      "type": "media",
+      "multiple": true
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "google_maps_url": {
+      "type": "text"
+    },
+    "pois": {
+      "type": "component",
+      "repeatable": true,
+      "component": "map.poi"
+    },
+    "provinces": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::province.province",
+      "inversedBy": "routes"
+    },
+    "motorcycles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::motorcycle.motorcycle",
+      "inversedBy": "routes"
     }
+  }
 }
