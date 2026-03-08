@@ -114,7 +114,8 @@ body {
   min-height: 100vh;
 }
 
-img, video {
+img,
+video {
   max-width: 100%;
   height: auto;
   display: block;
@@ -209,12 +210,10 @@ a:hover {
 .hero__bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 17, 23, 0.95) 0%,
-    rgba(15, 17, 23, 0.7) 40%,
-    rgba(245, 158, 11, 0.1) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(15, 17, 23, 0.95) 0%,
+      rgba(15, 17, 23, 0.7) 40%,
+      rgba(245, 158, 11, 0.1) 100%);
   z-index: 1;
 }
 
@@ -419,21 +418,21 @@ a:hover {
 }
 
 .route-card__difficulty--beginner {
-  background: rgba(34, 197, 94, 0.15);
-  color: var(--color-beginner);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: var(--color-beginner);
+  color: #0f1117;
+  border: none;
 }
 
 .route-card__difficulty--intermediate {
-  background: rgba(245, 158, 11, 0.15);
-  color: var(--color-intermediate);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: var(--color-intermediate);
+  color: #0f1117;
+  border: none;
 }
 
 .route-card__difficulty--advanced {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--color-advanced);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--color-advanced);
+  color: #ffffff;
+  border: none;
 }
 
 .route-card__body {
@@ -778,6 +777,21 @@ a:hover {
   }
 
   .stats-bar {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    padding: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .stats-bar__item {
+    padding: var(--space-1);
+  }
+
+  .stats-bar__value {
+    font-size: var(--text-lg);
+  }
+
+  .stats-bar__label {
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
   }
 }

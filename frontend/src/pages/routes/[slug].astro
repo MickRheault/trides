@@ -179,14 +179,16 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
   <div class="route-detail">
     <div class="container">
       <!-- Hero Image -->
-      <div class="route-detail__hero">
-        {heroImageUrl ? (
-          <img src={heroImageUrl} alt={route.hero_image?.alternativeText || route.title} style="width: 100%; height: 100%; object-fit: cover;" />
-        ) : (
-          <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated), var(--color-surface)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 4rem;">
-            🏔️
-          </div>
-        )}
+      <div class="route-detail__content">
+        <div class="route-detail__hero">
+          {heroImageUrl ? (
+            <img src={heroImageUrl} alt={route.hero_image?.alternativeText || route.title} style="width: 100%; height: 100%; object-fit: cover;" />
+          ) : (
+            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-surface), var(--color-bg-elevated), var(--color-surface)); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 4rem;">
+              🏔️
+            </div>
+          )}
+        </div>
       </div>
 
       <!-- Title -->
@@ -234,54 +236,33 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
         </div>
       </div>
 
-      <!-- Description -->
-      <div class="route-detail__content">
-        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
-          About This Route
-        </h2>
-        <div set:html={renderDescription(route.description)} />
-        
-        <div style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--color-border); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-6);">
+        <div style="margin: var(--space-12) 0; padding-top: var(--space-8); border-top: 1px solid var(--color-border); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
           <div>
-            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Road Types</h3>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Road Types</h3>
             <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
               {route.road_types?.map((rt: any) => (
-                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--text-sm);">
+                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 4px; font-size: var(--text-sm);">
                   {rt.name}
                 </span>
               )) || 'N/A'}
             </div>
           </div>
           <div>
-            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-2);">Bikes Used</h3>
+            <h3 style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Bikes Used</h3>
             <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
               {route.motorcycles?.map((mc: any) => (
-                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--text-sm);">
-                  🏍️ {mc.name}
+                <span style="background: var(--color-bg-elevated); border: 1px solid var(--color-border); padding: var(--space-1) var(--space-3); border-radius: 4px; font-size: var(--text-sm);">
+                  {mc.name}
                 </span>
               )) || 'N/A'}
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Gallery -->
-      {route.gallery && route.gallery.length > 0 && (
-        <div class="route-detail__content">
-          <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
-            Photos
-          </h2>
-          <div class="gallery-grid">
-            {route.gallery.map((img) => (
-              <a href={getStrapiMediaUrl(img.url)} target="_blank" rel="noopener noreferrer" class="gallery-item">
-                <img src={getStrapiMediaUrl(img.url)} alt={img.alternativeText || route.title} loading="lazy" />
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-
+        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: 0 0 var(--space-4);">
+          About This Route
+        </h2>
+        <div set:html={renderDescription(route.description)} />
 
       <!-- GPX Downloads -->
       {route.gpx_files && route.gpx_files.length > 0 && (
@@ -293,6 +274,22 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
             {route.gpx_files.map((file: any) => (
               <a href={file.url} class="gpx-btn" download>
                 📥 {file.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Gallery -->
+      {route.gallery && route.gallery.length > 0 && (
+        <div class="route-detail__content">
+          <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin: var(--space-10) 0 var(--space-4);">
+            Photos
+          </h2>
+          <div class="gallery-grid">
+            {route.gallery.map((img) => (
+              <a href={getStrapiMediaUrl(img.url)} target="_blank" rel="noopener noreferrer" class="gallery-item">
+                <img src={getStrapiMediaUrl(img.url)} alt={img.alternativeText || route.title} loading="lazy" />
               </a>
             ))}
           </div>

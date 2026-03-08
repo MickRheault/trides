@@ -4,10 +4,10 @@
 
 ## Tech Stack
 
-| Layer | Tech | Deployed To |
-|---|---|---|
-| Frontend | [Astro](https://astro.build) (TypeScript) | [Vercel](https://vercel.com) |
-| CMS | [Strapi](https://strapi.io) v5 (TypeScript) | [Railway](https://railway.app) |
+| Layer    | Tech                                        | Deployed To                    |
+| -------- | ------------------------------------------- | ------------------------------ |
+| Frontend | [Astro](https://astro.build) (TypeScript)   | [Vercel](https://vercel.com)   |
+| CMS      | [Strapi](https://strapi.io) v5 (TypeScript) | [Railway](https://railway.app) |
 
 ## Project Structure
 
