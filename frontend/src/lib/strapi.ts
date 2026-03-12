@@ -34,7 +34,7 @@ export interface Province {
   id: number;
   name: string;
   name_thai?: string;
-  region: 'north' | 'northeast' | 'central' | 'south';
+  region: 'north' | 'northeast' | 'central' | 'south' | 'west';
 }
 
 export interface RoadType {
@@ -61,7 +61,7 @@ export interface Route {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   road_types?: RoadType[];
   motorcycles?: Motorcycle[];
-  region: 'north' | 'northeast' | 'central' | 'south';
+  region: 'north' | 'northeast' | 'central' | 'south' | 'west';
   google_maps_url?: string;
   hero_image?: {
     url: string;
