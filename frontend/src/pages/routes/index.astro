@@ -76,9 +76,11 @@ if (routes.length === 0) {
       <div class="filter-bar" id="filter-bar">
         <button class="filter-btn filter-btn--active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="north">North</button>
-        <button class="filter-btn" data-filter="northeast">Northeast</button>
         <button class="filter-btn" data-filter="central">Central</button>
         <button class="filter-btn" data-filter="south">South</button>
+        <button class="filter-btn" data-filter="east">East</button>
+        <button class="filter-btn" data-filter="west">West</button>
+        <button class="filter-btn" data-filter="isaan">Isaan</button>
         <span style="width: 1px; background: var(--color-border); margin: 0 var(--space-2);"></span>
         <button class="filter-btn" data-filter="beginner">Beginner</button>
         <button class="filter-btn" data-filter="intermediate">Intermediate</button>
@@ -102,7 +104,7 @@ if (routes.length === 0) {
               </span>
             </div>
             <div class="route-card__body">
-              <span class="route-card__region">{route.region} Thailand</span>
+              <span class="route-card__region">{({'north':'North','south':'South','central':'Central','east':'East','west':'West','isaan':'Isaan'} as any)[route.region] ?? route.region} Thailand</span>
               <h3 class="route-card__title">{route.title}</h3>
               <p class="route-card__excerpt">{route.excerpt}</p>
               
