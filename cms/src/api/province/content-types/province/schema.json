@@ -22,7 +22,7 @@
     },
     "region": {
       "type": "enumeration",
-      "enum": ["north", "northeast", "central", "south"],
+      "enum": ["north", "isaan", "central", "south", "east", "west"],
       "required": true
     },
     "routes": {

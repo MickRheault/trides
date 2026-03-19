@@ -432,7 +432,7 @@ export interface ApiProvinceProvince extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String & Schema.Attribute.Required & Schema.Attribute.Unique;
     name_thai: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    region: Schema.Attribute.Enumeration<['north', 'northeast', 'central', 'south']> &
+    region: Schema.Attribute.Enumeration<['north', 'isaan', 'central', 'south', 'east', 'west']> &
       Schema.Attribute.Required;
     routes: Schema.Attribute.Relation<'manyToMany', 'api::route.route'>;
     updatedAt: Schema.Attribute.DateTime;
@@ -496,7 +496,7 @@ export interface ApiRouteRoute extends Struct.CollectionTypeSchema {
     pois: Schema.Attribute.Component<'map.poi', true>;
     provinces: Schema.Attribute.Relation<'manyToMany', 'api::province.province'>;
     publishedAt: Schema.Attribute.DateTime;
-    region: Schema.Attribute.Enumeration<['north', 'northeast', 'central', 'south']> &
+    region: Schema.Attribute.Enumeration<['north', 'isaan', 'central', 'south', 'east', 'west']> &
       Schema.Attribute.Required;
     road_types: Schema.Attribute.Relation<'manyToMany', 'api::road-type.road-type'>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;

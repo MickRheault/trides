@@ -72,12 +72,17 @@ const featuredRoutes = routes.slice(0, 3);
         Curated motorcycle routes through Thailand's mountains, coastlines, and hidden gems. 
         GPS tracks, road conditions, and everything you need for your next ride.
       </p>
+      <div class="hero__regions" style="margin-bottom: var(--space-6);">
+        <a href="/routes?region=north" class="region-pill">🏔️ North</a>
+        <a href="/routes?region=south" class="region-pill">🌊 South</a>
+        <a href="/routes?region=central" class="region-pill">🌾 Central</a>
+        <a href="/routes?region=east" class="region-pill">🌴 East</a>
+        <a href="/routes?region=isaan" class="region-pill">🌅 Isaan</a>
+        <a href="/routes?region=west" class="region-pill">⛰️ West</a>
+      </div>
       <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
         <a href="/routes" class="btn btn--primary btn--lg">
           Browse Routes →
-        </a>
-        <a href="/about" class="btn btn--secondary btn--lg">
-          Learn More
         </a>
       </div>
     </div>
@@ -110,7 +115,7 @@ const featuredRoutes = routes.slice(0, 3);
               </span>
             </div>
             <div class="route-card__body">
-              <span class="route-card__region">{route.region} Thailand</span>
+              <span class="route-card__region">{({'north':'North','south':'South','central':'Central','east':'East','west':'West','isaan':'Isaan'} as any)[route.region] ?? route.region} Thailand</span>
               <h3 class="route-card__title">{route.title}</h3>
               <p class="route-card__excerpt">{route.excerpt}</p>
               
@@ -148,31 +153,9 @@ const featuredRoutes = routes.slice(0, 3);
   <!-- About Section -->
   <section class="section about">
     <div class="container">
-      <div class="section__header">
-        <span class="section__label">Why thmaps</span>
-        <h2 class="section__title">Your Riding Companion</h2>
-        <p class="section__description">
-          Everything you need to plan your next motorcycle adventure in the Land of Smiles.
-        </p>
-      </div>
-
-      <div class="about__grid">
-        <div class="about__card">
-          <div class="about__icon">📍</div>
-          <h3>GPS Tracks</h3>
-          <p>Download GPX files for every route. Load them on your phone or GPS device and ride with confidence, even without cell service.</p>
-        </div>
-        <div class="about__card">
-          <div class="about__icon">🛣️</div>
-          <h3>Road Conditions</h3>
-          <p>Know exactly what to expect — road surface type, elevation changes, fuel stop distances, and seasonal conditions for every route.</p>
-        </div>
-        <div class="about__card">
-          <div class="about__icon">🌡️</div>
-          <h3>Best Timing</h3>
-          <p>Ride in the right season. We tell you the best months for each route, considering weather, road conditions, and tourist crowds.</p>
-        </div>
-      </div>
+      <p class="about__intro">
+        thmaps (Thai + Maps) is a curated repository of motorcycle routes across Thailand. Whether you're a seasoned touring rider or a first-timer on a rented Honda Wave, we want to help you find the perfect road.
+      </p>
     </div>
   </section>
 </BaseLayout>

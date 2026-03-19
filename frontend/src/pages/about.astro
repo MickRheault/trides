@@ -15,33 +15,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section class="section" style="padding-top: 0;">
     <div class="container container--narrow">
-      <div style="font-size: var(--text-lg); color: var(--color-text-secondary); line-height: 1.8;">
-        <p style="margin-bottom: var(--space-6);">
-          <strong style="color: var(--color-text);">thmaps</strong> (Thai + Maps) is a curated repository of motorcycle routes across Thailand. Whether you're a seasoned touring rider or a first-timer on a rented Honda Wave, we want to help you find the perfect road.
-        </p>
-        <p style="margin-bottom: var(--space-6);">
-          Every route is documented with GPS tracks you can download, road condition details, best-season timing, and honest difficulty ratings. No clickbait, no sponsored content — just real routes we've ridden and loved.
-        </p>
-        <p style="margin-bottom: var(--space-6);">
-          Thailand offers some of the best motorcycle riding in the world. From the winding mountain passes of the north to the coastal roads of the south, there's a route for every skill level and every type of bike.
-        </p>
-      </div>
-
-      <div class="about__grid" style="margin-top: var(--space-12);">
-        <div class="about__card">
-          <div class="about__icon">🇹🇭</div>
-          <h3>Made in Thailand</h3>
-          <p>Built by riders based in Thailand who ride these routes regularly and keep the information up to date.</p>
-        </div>
-        <div class="about__card">
-          <div class="about__icon">🆓</div>
-          <h3>Free & Open</h3>
-          <p>All route information and GPX tracks are completely free to download and use. No accounts required.</p>
-        </div>
-        <div class="about__card">
-          <div class="about__icon">🔄</div>
-          <h3>Always Updated</h3>
-          <p>Road conditions change. We regularly update routes to reflect new constructions, closures, and seasonal changes.</p>
+      <p class="about__intro">
+        <strong style="color: var(--color-text);">thmaps</strong> (Thai + Maps) is a curated repository of motorcycle routes across Thailand. Whether you're a seasoned touring rider or a first-timer on a rented Honda Wave, we want to help you find the perfect road.
+      </p>
+      <img
+        src="https://res.cloudinary.com/dkt5mugsu/image/upload/w_1200,q_auto,f_auto/v1773936388/moe_o2h76n.jpg"
+        alt="Riding through Thailand"
+        style="width: 100%; border-radius: var(--radius-lg); margin-top: var(--space-8); display: block;"
+      />
+      <div style="margin-top: var(--space-10); text-align: center;">
+        <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-4);">Get in touch</p>
+        <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+          <a href="mailto:michael.rheault@gmail.com" class="btn btn--secondary">
+            michael.rheault@gmail.com
+          </a>
+          <a href="https://www.facebook.com/ThisIsMick/" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+            https://www.facebook.com/ThisIsMick/
+          </a>
         </div>
       </div>
     </div>
