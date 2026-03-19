@@ -138,30 +138,39 @@ if (routes.length === 0) {
 </BaseLayout>
 
 <script>
-  // Client-side filtering
   const filterBar = document.getElementById('filter-bar');
   const routeCards = document.querySelectorAll('.route-card') as NodeListOf<HTMLElement>;
 
+  function applyFilter(filter: string | null) {
+    if (!filter || filter === 'all') {
+      routeCards.forEach(card => (card.style.display = ''));
+      filterBar?.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-btn--active'));
+      filterBar?.querySelector('[data-filter="all"]')?.classList.add('filter-btn--active');
+      return;
+    }
+
+    // Activate matching button
+    filterBar?.querySelectorAll('.filter-btn').forEach(btn => {
+      const b = btn as HTMLElement;
+      b.classList.toggle('filter-btn--active', b.dataset.filter === filter);
+    });
+
+    // Show/hide cards
+    routeCards.forEach(card => {
+      const matches = card.dataset.region === filter || card.dataset.difficulty === filter;
+      card.style.display = matches ? '' : 'none';
+    });
+  }
+
+  // Apply filter from URL on page load
+  const params = new URLSearchParams(window.location.search);
+  const initialFilter = params.get('region') || params.get('difficulty');
+  applyFilter(initialFilter);
+
+  // Apply filter on button click
   filterBar?.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
     if (!target.classList.contains('filter-btn')) return;
-
-    const filter = target.dataset.filter;
-
-    // Toggle active state
-    filterBar.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('filter-btn--active'));
-    target.classList.add('filter-btn--active');
-
-    // Filter cards
-    routeCards.forEach(card => {
-      if (filter === 'all') {
-        card.style.display = '';
-        return;
-      }
-      const region = card.dataset.region;
-      const difficulty = card.dataset.difficulty;
-      const matches = region === filter || difficulty === filter;
-      card.style.display = matches ? '' : 'none';
-    });
+    applyFilter(target.dataset.filter ?? null);
   });
 </script>
