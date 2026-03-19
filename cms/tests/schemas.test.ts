@@ -59,7 +59,7 @@ describe('Route content type schema', () => {
 
     it('has region enum with correct values', () => {
       expect(schema.attributes.region.type).toBe('enumeration');
-      expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
+      expect(schema.attributes.region.enum).toEqual(['north', 'isaan', 'central', 'south', 'east', 'west']);
       expect(schema.attributes.region.required).toBe(true);
     });
   });
@@ -147,7 +147,7 @@ describe('Province content type schema', () => {
 
   it('has region enum matching Route regions', () => {
     expect(schema.attributes.region.type).toBe('enumeration');
-    expect(schema.attributes.region.enum).toEqual(['north', 'northeast', 'central', 'south']);
+    expect(schema.attributes.region.enum).toEqual(['north', 'isaan', 'central', 'south', 'east', 'west']);
   });
 
   it('has routes as manyToMany relation back to Route', () => {

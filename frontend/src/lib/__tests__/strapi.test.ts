@@ -29,7 +29,7 @@ interface Route {
   estimated_hours: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   road_type: 'paved' | 'mixed' | 'off-road';
-  region: 'north' | 'northeast' | 'central' | 'south';
+  region: 'north' | 'isaan' | 'central' | 'south' | 'east' | 'west';
   best_months: string;
 }
 

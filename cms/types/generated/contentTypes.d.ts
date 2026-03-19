@@ -432,9 +432,7 @@ export interface ApiProvinceProvince extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String & Schema.Attribute.Required & Schema.Attribute.Unique;
     name_thai: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    region: Schema.Attribute.Enumeration<
-      ['north', 'northeast', 'central', 'south', 'east', 'west']
-    > &
+    region: Schema.Attribute.Enumeration<['north', 'isaan', 'central', 'south', 'east', 'west']> &
       Schema.Attribute.Required;
     routes: Schema.Attribute.Relation<'manyToMany', 'api::route.route'>;
     updatedAt: Schema.Attribute.DateTime;
