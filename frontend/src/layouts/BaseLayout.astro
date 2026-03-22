@@ -1,10 +1,13 @@
 ---
+import SEO from '../components/SEO.astro';
+
 interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = 'Discover the best motorcycle routes across Thailand. Curated rides through mountains, coastlines, and hidden gems.' } = Astro.props;
+const { title, description = 'Discover the best motorcycle routes across Thailand. Curated rides through mountains, coastlines, and hidden gems.', image } = Astro.props;
 ---
 
 <!doctype html>
@@ -12,9 +15,8 @@ const { title, description = 'Discover the best motorcycle routes across Thailan
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+    <SEO title={title} description={description} image={image} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title} | thmaps</title>
   </head>
   <body>
     <header class="site-header">
