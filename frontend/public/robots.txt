@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Bot Governance for AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://thmaps.com/sitemap-index.xml
