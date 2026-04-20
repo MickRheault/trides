@@ -787,6 +787,10 @@ a:hover {
     min-height: 70vh;
   }
 
+  .hide-on-mobile {
+    display: none;
+  }
+
   .site-nav {
     gap: var(--space-4);
   }
