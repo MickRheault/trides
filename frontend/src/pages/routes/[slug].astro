@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoutes, getRouteBySlug, getStrapiMediaUrl } from '../../lib/strapi';
 import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
 
 /** Extract coordinates from a Google Maps URL if possible */
 function extractCoordinates(url: string | null | undefined): { latitude: number, longitude: number } | null {
@@ -21,13 +22,42 @@ function extractCoordinates(url: string | null | undefined): { latitude: number,
   return null;
 }
 
-/** Convert Strapi richtext (markdown) to HTML */
+/** Convert Strapi richtext (markdown) to HTML and sanitize */
 function renderDescription(text: string): string {
   if (!text) return '';
-  // If already contains HTML tags, return as-is (mock data)
-  if (text.includes('<p>') || text.includes('<br')) return text;
-  // Parse markdown from Strapi
-  return marked.parse(text, { async: false }) as string;
+  
+  let rawHtml = text;
+  // If not already HTML, parse it
+  if (!text.includes('<p>') && !text.includes('<br')) {
+    rawHtml = marked.parse(text, { async: false }) as string;
+  }
+  
+  // Temporarily add a hook to only allow iframes from trusted domains for this specific field
+  DOMPurify.addHook('uponSanitizeElement', (node, data) => {
+    if (data.tagName === 'iframe') {
+      const src = node.getAttribute('src') || '';
+      const isTrusted = 
+        src.startsWith('https://www.youtube.com/') || 
+        src.startsWith('https://youtube.com/') ||
+        src.startsWith('https://www.facebook.com/') || 
+        src.startsWith('https://player.vimeo.com/');
+      
+      if (!isTrusted) {
+        node.parentNode?.removeChild(node);
+      }
+    }
+  });
+
+  // Sanitize the HTML, allowing safe iframes
+  const sanitized = DOMPurify.sanitize(rawHtml, {
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
+  }) as string;
+  
+  // Remove the hook so it doesn't affect other DOMPurify calls globally
+  DOMPurify.removeHooks('uponSanitizeElement');
+  
+  return sanitized;
 }
 
 export async function getStaticPaths() {

@@ -17,6 +17,7 @@
     "@astrojs/sitemap": "^3.7.1",
     "@raruto/leaflet-elevation": "^2.5.2",
     "astro": "^5.17.1",
+    "isomorphic-dompurify": "^3.15.0",
     "leaflet": "^1.9.4",
     "marked": "^17.0.4",
     "typescript": "^5.9.3"
