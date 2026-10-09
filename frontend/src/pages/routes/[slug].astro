@@ -92,12 +92,6 @@ if (!route) {
       distance_km: 600, estimated_hours: 16, difficulty: 'intermediate',
       road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
       region: 'north',
-      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
-      gpx_files: [
-        { url: '/gpx/maehongson-gardenofrocks.gpx', name: 'Full Loop (Clockwise)' },
-        { url: '#', name: 'Full Loop (Counter-clockwise)' },
-        { url: '#', name: 'Pai to Mae Hong Son segment' },
-      ],
       pois: [
         { name: 'Pai Walking Street', description: 'Nightly market with local food, crafts, and live music.', latitude: 19.3590, longitude: 98.4400, type: 'attraction', google_maps_url: 'https://maps.google.com/?q=19.3590,98.4400' },
         { name: 'Tham Lot Cave', description: 'Massive cave system with stalactites and a river running through it.', latitude: 19.4558, longitude: 98.2789, type: 'attraction', google_maps_url: 'https://maps.google.com/?q=19.4558,98.2789' },
@@ -124,10 +118,6 @@ if (!route) {
       distance_km: 120, estimated_hours: 4, difficulty: 'beginner',
       road_types: [{ id: 1, documentId: 'rt1', name: 'paved' }],
       region: 'north',
-      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
-      gpx_files: [
-        { url: '#', name: 'Summit Route' },
-      ],
       pois: [
         { name: 'Wachirathan Waterfall', description: 'Powerful 80m waterfall with a misty viewing area.', latitude: 18.5386, longitude: 98.5997, type: 'viewpoint' },
         { name: 'Royal Twin Pagodas', description: 'Naphamethinidon and Naphaphonphumisiri pagodas built to honor the King and Queen.', latitude: 18.5572, longitude: 98.4867, type: 'attraction', google_maps_url: 'https://maps.google.com/?q=18.5572,98.4867' },
@@ -148,11 +138,6 @@ if (!route) {
       distance_km: 150, estimated_hours: 5, difficulty: 'advanced',
       road_types: [{ id: 2, documentId: 'rt2', name: 'mixed' }],
       region: 'north',
-      gpx_file: '/gpx/maehongson-gardenofrocks.gpx',
-      gpx_files: [
-        { url: '#', name: 'Chiang Mai to Pai' },
-        { url: '#', name: 'Pai to Chiang Mai (reverse)' },
-      ],
       pois: [
         { name: 'Mae Yen Waterfall', description: 'Hidden waterfall accessible by a 2-hour hike from the road.', latitude: 19.2400, longitude: 98.7100, type: 'attraction' },
         { name: 'Pai Canyon', description: 'Narrow ridgeline with spectacular views on both sides. Best at sunset.', latitude: 19.3280, longitude: 98.4810, type: 'viewpoint', google_maps_url: 'https://maps.google.com/?q=19.3280,98.4810' },
@@ -181,10 +166,10 @@ const difficultyColors: Record<string, string> = {
   advanced: 'var(--color-advanced)',
 };
 
-// Get GPX URL: prefer Strapi media (Cloudinary), fall back to local file
+// GPX tracks come from uploaded Strapi media.
 const gpxUrl = route.gpx_files?.[0]?.url
   ? getStrapiMediaUrl(route.gpx_files[0].url)
-  : (route.gpx_file || '/gpx/maehongson-gardenofrocks.gpx');
+  : null;
 const heroImageUrl = route.hero_image?.url
   ? getStrapiMediaUrl(route.hero_image.url)
   : null;
@@ -256,15 +241,17 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
       </div>
 
       <!-- Interactive Map with Elevation -->
-      <div class="route-detail__content">
-        <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4);">
-          Route Map & Elevation
-        </h2>
-        <div class="route-detail__map-container">
-          <div id="route-map" data-gpx={gpxUrl} data-pois={JSON.stringify(mapPois)}></div>
-          <div id="elevation-chart"></div>
+      {gpxUrl && (
+        <div class="route-detail__content">
+          <h2 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4);">
+            Route Map & Elevation
+          </h2>
+          <div class="route-detail__map-container">
+            <div id="route-map" data-gpx={gpxUrl} data-pois={JSON.stringify(mapPois)}></div>
+            <div id="elevation-chart"></div>
+          </div>
         </div>
-      </div>
+      )}
 
       <!-- Metadata & About -->
       <div class="route-detail__content">
@@ -305,7 +292,7 @@ const mapPois = route.pois?.filter((p: any) => p.latitude && p.longitude) || [];
           </h2>
           <div class="gpx-downloads">
             {route.gpx_files.map((file: any) => (
-              <a href={file.url} class="gpx-btn" download>
+              <a href={getStrapiMediaUrl(file.url)} class="gpx-btn" download>
                 📥 {file.name}
               </a>
             ))}

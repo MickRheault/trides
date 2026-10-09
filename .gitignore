@@ -29,3 +29,6 @@ cms/public/uploads/*
 # Logs
 *.log
 npm-debug.log*
+
+# GPX tracks are uploaded to Strapi, not stored in Git
+*.[gG][pP][xX]
